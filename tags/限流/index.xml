@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>限流 - 标签 - 海蓝的博客</title>
+        <link>https://guohailan.github.io/tags/%E9%99%90%E6%B5%81/</link>
+        <description>限流 - 标签 - 海蓝的博客</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>547585808@qq.com (guohailan)</managingEditor>
+            <webMaster>547585808@qq.com (guohailan)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 08 Nov 2020 17:20:37 &#43;0000</lastBuildDate><atom:link href="https://guohailan.github.io/tags/%E9%99%90%E6%B5%81/" rel="self" type="application/rss+xml" /><item>
+    <title>nginx配置限流</title>
+    <link>https://guohailan.github.io/nginx%E9%85%8D%E7%BD%AE%E9%99%90%E6%B5%81/</link>
+    <pubDate>Sun, 08 Nov 2020 17:20:37 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/nginx%E9%85%8D%E7%BD%AE%E9%99%90%E6%B5%81/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/nginx-logo.png" referrerpolicy="no-referrer">
+            </div><p>系统设计时一般会预估负载，当系统暴露在公网中时，恶意攻击或正常突发流量等都可能导致系统被压垮，而限流就是保护措施之一。限流即控制流量，本文将记录 Nginx 的一种速率限流设置。</p>]]></description>
+</item></channel>
+</rss>

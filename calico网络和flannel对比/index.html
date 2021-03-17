@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>calico网络和flannel对比 - 海蓝的博客</title><meta name="Description" content="运维搬砖"><meta property="og:title" content="calico网络和flannel对比" />
+<meta property="og:description" content="本文介绍了k8s常见2中方案的差异，以及各自的优势" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://guohailan.github.io/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/" /><meta property="og:image" content="https://guohailan.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-06-10T20:21:08&#43;00:00" />
+<meta property="article:modified_time" content="2020-06-10T20:21:08&#43;00:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://guohailan.github.io/logo.png"/>
+
+<meta name="twitter:title" content="calico网络和flannel对比"/>
+<meta name="twitter:description" content="本文介绍了k8s常见2中方案的差异，以及各自的优势"/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://guohailan.github.io/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/" /><link rel="prev" href="https://guohailan.github.io/redis%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E6%90%AD%E5%BB%BA/" /><link rel="next" href="https://guohailan.github.io/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "calico网络和flannel对比",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/guohailan.github.io\/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94\/"
+        },"genre": "posts","keywords": "k8s","wordcount":  1759 ,
+        "url": "https:\/\/guohailan.github.io\/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94\/","datePublished": "2020-06-10T20:21:08+00:00","dateModified": "2020-06-10T20:21:08+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "","logo": "https:\/\/guohailan.github.io\/images\/avatar.png"},"author": {
+                "@type": "Person",
+                "name": "guohailan"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="海蓝的博客"><span class="header-title-pre"><i class='far fas fa-blog fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/guohailan" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="海蓝的博客"><span class="header-title-pre"><i class='far fas fa-blog fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/guohailan" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">calico网络和flannel对比</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>guohailan</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/k8s/"><i class="far fa-folder fa-fw"></i>k8s</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-06-10">2020-06-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1759 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 4 分钟&nbsp;<span id="/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/" class="leancloud_visitors" data-flag-title="calico网络和flannel对比">
+                        <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/thumbnail/calico.png"
+        data-srcset="/images/thumbnail/calico.png, /images/thumbnail/calico.png 1.5x, /images/thumbnail/calico.png 2x"
+        data-sizes="auto"
+        alt="/images/thumbnail/calico.png"
+        title="/images/thumbnail/calico.png" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#calico">Calico</a>
+      <ul>
+        <li><a href="#什么是calico">什么是Calico</a></li>
+        <li><a href="#calico网络基本架构">Calico网络基本架构</a>
+          <ul>
+            <li><a href="#主要组件">主要组件</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#flannel">Flannel</a>
+      <ul>
+        <li><a href="#什么是flannel">什么是Flannel</a></li>
+        <li><a href="#flannel网络基本架构">Flannel网络基本架构</a></li>
+      </ul>
+    </li>
+    <li><a href="#对比">对比</a></li>
+    <li><a href="#k8s为什么会出现各种网络方案">K8S为什么会出现各种网络方案</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>本文介绍了k8s常见2中方案的差异，以及各自的优势</p>
+<h2 id="calico">Calico</h2>
+<h3 id="什么是calico">什么是Calico</h3>
+<p>Calico 是一个三层的数据中心网络方案,而且方便集成 OpenStack 这种 IaaS 云架构,能够提供高效可控的 VM、容器、裸机之间的通信。</p>
+<h3 id="calico网络基本架构">Calico网络基本架构</h3>
+<p>Calico BGP模式在小规模集群中可以直接互联,在大规模集群中可以通过额外的BGP route reflector来完成。
+<figure><a class="lightgallery" href="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/calico.png" title="Calico" data-thumbnail="/images/calico网络和flannel对比/calico.png" data-sub-html="<h2> </h2><p>Calico</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/calico.png"
+            data-srcset="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/calico.png, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/calico.png 1.5x, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/calico.png 2x"
+            data-sizes="auto"
+            alt="/images/calico网络和flannel对比/calico.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure><br>
+Calico是一个基于BGP的纯三层的网络方案,与OpenStack、Kubernetes、AWS、GCE等云平台都能够良好地集成。Calico在每个计算节点都利用Linux Kernel实现了一个高效的vRouter来负责数据转发。每个vRouter都通过BGP1协议把在本节点上运行的容器的路由信息向整个Calico网络广播,并自动设置到达其他节点的路由转发规则。Calico利用了Linux内核原生的路由和iptables防火墙功能。 进出各个容器、虚拟机和物理主机的所有流量都会在路由到目标之前遍历这些内核规则。</p>
+<h4 id="主要组件">主要组件</h4>
+<ul>
+<li><strong>Felix</strong>：Calico agent,跑在每台需要运行workload的节点上,主要负责配置路由及ACLs等信息来确保endpoint的连通状态；</li>
+<li><strong>etcd</strong>：分布式键值存储,主要负责网络元数据一致性,确保Calico网络状态的准确性；</li>
+<li><strong>BGPClient(BIRD)</strong>：主要负责把Felix写入kernel的路由信息分发到当前Calico网络,确保workload间的通信的有效性；</li>
+<li><strong>BGP Route Reflector(BIRD)</strong>：大规模部署时使用,摒弃所有节点互联的mesh模式,通过一个或者多个BGPRoute Reflector来完成集中式的路由分发；</li>
+<li><strong>CalicoCtl</strong>：允许从命令行界面配置实现高级策略和网络。</li>
+</ul>
+<h2 id="flannel">Flannel</h2>
+<h3 id="什么是flannel">什么是Flannel</h3>
+<p>Flannel是由CoreOS开发的项目,可能是最直接和最受欢迎的CNI插件。它是容器编排系统中最成熟的网络结构示例之一,旨在实现更好的容器间和主机间网络。随着CNI概念的兴起,Flannel CNI插件算是早期的入门。</p>
+<h3 id="flannel网络基本架构">Flannel网络基本架构</h3>
+<p><figure><a class="lightgallery" href="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/flannel.png" title="Flannel" data-thumbnail="/images/calico网络和flannel对比/flannel.png" data-sub-html="<h2> </h2><p>Flannel</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/flannel.png"
+            data-srcset="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/flannel.png, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/flannel.png 1.5x, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/flannel.png 2x"
+            data-sizes="auto"
+            alt="/images/calico网络和flannel对比/flannel.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure><br>
+Flannel首先创建了一个名为Flannel0的网桥,而且这个网桥的一端连接docker0网桥,另一端连接一个叫作Flanneld的服务进程。Flanneld进程上连etcd,利用etcd来管理可分配的IP地址段资源,同时监控etcd中每个Pod的实际地址,并在内存中建立了一个Pod节点路由表；Flanneld进程下连docker0和物理网络,使用内存中的Pod节点路由表,将docker0发给它的数据包包装起来,利用物理网络的连接将数据包投递到目标Flanneld上,从而完成Pod到Pod之间的直接地址通信。</p>
+<h2 id="对比">对比</h2>
+<p>Calico整个过程中始终都是根据iptables规则进行路由转发，并没有进行封包，解包的过程，这和Flannel比起来效率就会快多了。
+由于Flannel几乎是最早的跨网络通信解决方案，其他的方案都可以被看做是Fannel的某种改进版。</p>
+<p>Calico的设计比较新颖，Flannel的Host-Gateway模式之所以不能跨二层网络，是因为它只能修改主机的路由，Calico把改路由表的做法换成了标准的BGP路由协议。
+相当于在每个节点上模拟出一个额外的路由器，由于采用的是标准协议，Calico模拟路由器的路由表信息就可以被传播到网络的其他路由设备中，这样就实现了在三层网络上的高速跨节点网络。
+不过在现实中的网络并不总是支持BGP路由的，因此Calico也设计了一种IPIP模式，使用Overlay的方式来传输数据。IPIP的包头非常小，而且也是内置在内核中的，因此它的速度理论上比VxLAN快一点点，但安全性更差。</p>
+<h2 id="k8s为什么会出现各种网络方案">K8S为什么会出现各种网络方案</h2>
+<p><figure><a class="lightgallery" href="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net.png" title="net1" data-thumbnail="/images/calico网络和flannel对比/net.png" data-sub-html="<h2> </h2><p>net1</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net.png"
+            data-srcset="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net.png, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net.png 1.5x, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net.png 2x"
+            data-sizes="auto"
+            alt="/images/calico网络和flannel对比/net.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<blockquote>
+<p>由于Docker等容器工具只是利用内核的网络Namespace实现了网络隔离，各个节点上的容器是在所属节点上自动分配IP地址的，从全局来看，这种局部地址就像是不同小区里的门牌号，一旦拿到一个更大的范围上看，就可能是会重复的。</p>
+</blockquote>
+<p><figure><a class="lightgallery" href="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net2.png" title="net2" data-thumbnail="/images/calico网络和flannel对比/net2.png" data-sub-html="<h2> </h2><p>net2</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net2.png"
+            data-srcset="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net2.png, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net2.png 1.5x, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net2.png 2x"
+            data-sizes="auto"
+            alt="/images/calico网络和flannel对比/net2.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<blockquote>
+<p>为了解决这个问题，Flannel设计了一种全局的网络地址分配机制，即使用Etcd来存储网段和节点之间的关系，然后Flannel配置各个节点上的Docker（或其他容器工具），只在分配到当前节点的网段里选择容器IP地址。</p>
+</blockquote>
+<p><figure><a class="lightgallery" href="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net3.png" title="net3" data-thumbnail="/images/calico网络和flannel对比/net3.png" data-sub-html="<h2> </h2><p>net3</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net3.png"
+            data-srcset="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net3.png, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net3.png 1.5x, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net3.png 2x"
+            data-sizes="auto"
+            alt="/images/calico网络和flannel对比/net3.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<p><figure><a class="lightgallery" href="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net4.png" title="net4" data-thumbnail="/images/calico网络和flannel对比/net4.png" data-sub-html="<h2> </h2><p>net4</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net4.png"
+            data-srcset="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net4.png, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net4.png 1.5x, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net4.png 2x"
+            data-sizes="auto"
+            alt="/images/calico网络和flannel对比/net4.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<p><figure><a class="lightgallery" href="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net5.png" title="net5" data-thumbnail="/images/calico网络和flannel对比/net5.png" data-sub-html="<h2> </h2><p>net5</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net5.png"
+            data-srcset="/images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net5.png, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net5.png 1.5x, /images/calico%e7%bd%91%e7%bb%9c%e5%92%8cflannel%e5%af%b9%e6%af%94/net5.png 2x"
+            data-sizes="auto"
+            alt="/images/calico网络和flannel对比/net5.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-06-10</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://guohailan.github.io/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/" data-title="calico网络和flannel对比" data-hashtags="k8s"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://guohailan.github.io/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/" data-hashtag="k8s"><i class="fab fa-facebook-square fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://guohailan.github.io/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/" data-title="calico网络和flannel对比"><i class="fab fa-hacker-news fa-fw"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://guohailan.github.io/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/" data-title="calico网络和flannel对比" data-image="/images/thumbnail/calico.png"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://guohailan.github.io/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/" data-title="calico网络和flannel对比"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/k8s/">k8s</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/redis%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E6%90%AD%E5%BB%BA/" class="prev" rel="prev" title="Redis主从哨兵搭建"><i class="fas fa-angle-left fa-fw"></i>Redis主从哨兵搭建</a>
+            <a href="/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/" class="next" rel="next" title="使用Jenkins进行持续集成">使用Jenkins进行持续集成<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">guohailan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><script type="text/javascript" src="/lib/valine/Valine.min.js"></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/twemoji/twemoji.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"g92f6NC1D6E1hrdTFMyRcb87-9Nh9j0Va","appKey":"Ndgct3lUzY9D37skjARFEdDT","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-cn","pageSize":10,"placeholder":"你的评论 ...","recordIP":true,"serverURLs":"https://leancloud.hugoloveit.com","visitor":true}},"data":{"id-1":"My blog","id-2":"My blog"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"},"twemoji":true,"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,100 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>海蓝的博客</title>
+        <link>https://guohailan.github.io/</link>
+        <description>运维搬砖</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>547585808@qq.com (guohailan)</managingEditor>
+            <webMaster>547585808@qq.com (guohailan)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 23 Jan 2021 20:17:13 &#43;0000</lastBuildDate>
+            <atom:link href="https://guohailan.github.io/index.xml" rel="self" type="application/rss+xml" />
+        <item>
+    <title>Trojan-go搭建</title>
+    <link>https://guohailan.github.io/trojan-go%E6%90%AD%E5%BB%BA/</link>
+    <pubDate>Sat, 23 Jan 2021 20:17:13 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/trojan-go%E6%90%AD%E5%BB%BA/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/trojan-go.png" referrerpolicy="no-referrer">
+            </div><p>使用trojan-go进行搭建。</p>]]></description>
+</item><item>
+    <title>Trojan搭建</title>
+    <link>https://guohailan.github.io/trojan%E6%90%AD%E5%BB%BA/</link>
+    <pubDate>Sun, 17 Jan 2021 18:25:13 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/trojan%E6%90%AD%E5%BB%BA/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/trojan.png" referrerpolicy="no-referrer">
+            </div><p>使用trojan原版进行搭建。</p>]]></description>
+</item><item>
+    <title>nginx配置限流</title>
+    <link>https://guohailan.github.io/nginx%E9%85%8D%E7%BD%AE%E9%99%90%E6%B5%81/</link>
+    <pubDate>Sun, 08 Nov 2020 17:20:37 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/nginx%E9%85%8D%E7%BD%AE%E9%99%90%E6%B5%81/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/nginx-logo.png" referrerpolicy="no-referrer">
+            </div><p>系统设计时一般会预估负载，当系统暴露在公网中时，恶意攻击或正常突发流量等都可能导致系统被压垮，而限流就是保护措施之一。限流即控制流量，本文将记录 Nginx 的一种速率限流设置。</p>]]></description>
+</item><item>
+    <title>goftp 125 Data connection already open问题</title>
+    <link>https://guohailan.github.io/goftp-125-data-connection-already-open%E9%97%AE%E9%A2%98/</link>
+    <pubDate>Mon, 19 Oct 2020 21:24:51 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/goftp-125-data-connection-already-open%E9%97%AE%E9%A2%98/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/goftp.jpg" referrerpolicy="no-referrer">
+            </div><p>记录一次使用goftp包文件上传异常的问题</p>]]></description>
+</item><item>
+    <title>kubeadm搭建k8s 1.18</title>
+    <link>https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/</link>
+    <pubDate>Thu, 20 Aug 2020 20:58:38 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/k8s.jpg" referrerpolicy="no-referrer">
+            </div><p>本文主要介绍k8s搭建，使用官方推荐工具kubeadm进行搭建，ETCD独立部署</p>]]></description>
+</item><item>
+    <title>python分析豆瓣影评</title>
+    <link>https://guohailan.github.io/python%E5%88%86%E6%9E%90%E8%B1%86%E7%93%A3%E5%BD%B1%E8%AF%84/</link>
+    <pubDate>Sun, 05 Jul 2020 13:59:11 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/python%E5%88%86%E6%9E%90%E8%B1%86%E7%93%A3%E5%BD%B1%E8%AF%84/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/spider.png" referrerpolicy="no-referrer">
+            </div><p>本文主要对当前热门剧《隐秘的角落》进行豆瓣短评以及评价进行可视化分析，数据抓取主要为python编写的爬虫。</p>]]></description>
+</item><item>
+    <title>Redis集群搭建</title>
+    <link>https://guohailan.github.io/redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
+    <pubDate>Thu, 18 Jun 2020 22:15:07 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/redis.jpg" referrerpolicy="no-referrer">
+            </div><p>Redis3.0上加入了cluster模式，实现的redis的分布式存储，本文主要介绍Redis集群的相关搭建。</p>]]></description>
+</item><item>
+    <title>使用Jenkins进行持续集成</title>
+    <link>https://guohailan.github.io/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/</link>
+    <pubDate>Wed, 10 Jun 2020 23:15:33 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/jenkins.png" referrerpolicy="no-referrer">
+            </div><p>使用Jenkins进行持续集成，案例在虚拟机上进行搭建，本文主要介绍环境搭建以及配置部分。</p>]]></description>
+</item><item>
+    <title>calico网络和flannel对比</title>
+    <link>https://guohailan.github.io/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/</link>
+    <pubDate>Wed, 10 Jun 2020 20:21:08 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/calico.png" referrerpolicy="no-referrer">
+            </div><p>本文介绍了k8s常见2中方案的差异，以及各自的优势</p>]]></description>
+</item><item>
+    <title>Redis主从哨兵搭建</title>
+    <link>https://guohailan.github.io/redis%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E6%90%AD%E5%BB%BA/</link>
+    <pubDate>Sat, 06 Jun 2020 15:47:23 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/redis%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E6%90%AD%E5%BB%BA/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/redis.jpg" referrerpolicy="no-referrer">
+            </div><p>本文章基于最新版本Redis5.0.5版本进行redis主从哨兵模式搭建</p>]]></description>
+</item></channel>
+</rss>

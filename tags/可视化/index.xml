@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>可视化 - 标签 - 海蓝的博客</title>
+        <link>https://guohailan.github.io/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/</link>
+        <description>可视化 - 标签 - 海蓝的博客</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>547585808@qq.com (guohailan)</managingEditor>
+            <webMaster>547585808@qq.com (guohailan)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 05 Jul 2020 13:59:11 &#43;0000</lastBuildDate><atom:link href="https://guohailan.github.io/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="self" type="application/rss+xml" /><item>
+    <title>python分析豆瓣影评</title>
+    <link>https://guohailan.github.io/python%E5%88%86%E6%9E%90%E8%B1%86%E7%93%A3%E5%BD%B1%E8%AF%84/</link>
+    <pubDate>Sun, 05 Jul 2020 13:59:11 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/python%E5%88%86%E6%9E%90%E8%B1%86%E7%93%A3%E5%BD%B1%E8%AF%84/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/spider.png" referrerpolicy="no-referrer">
+            </div><p>本文主要对当前热门剧《隐秘的角落》进行豆瓣短评以及评价进行可视化分析，数据抓取主要为python编写的爬虫。</p>]]></description>
+</item></channel>
+</rss>

@@ -1,0 +1,26 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>k8s - 分类 - 海蓝的博客</title>
+        <link>https://guohailan.github.io/categories/k8s/</link>
+        <description>k8s - 分类 - 海蓝的博客</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>547585808@qq.com (guohailan)</managingEditor>
+            <webMaster>547585808@qq.com (guohailan)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 20 Aug 2020 20:58:38 &#43;0000</lastBuildDate><atom:link href="https://guohailan.github.io/categories/k8s/" rel="self" type="application/rss+xml" /><item>
+    <title>kubeadm搭建k8s 1.18</title>
+    <link>https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/</link>
+    <pubDate>Thu, 20 Aug 2020 20:58:38 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/k8s.jpg" referrerpolicy="no-referrer">
+            </div><p>本文主要介绍k8s搭建，使用官方推荐工具kubeadm进行搭建，ETCD独立部署</p>]]></description>
+</item><item>
+    <title>calico网络和flannel对比</title>
+    <link>https://guohailan.github.io/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/</link>
+    <pubDate>Wed, 10 Jun 2020 20:21:08 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/calico.png" referrerpolicy="no-referrer">
+            </div><p>本文介绍了k8s常见2中方案的差异，以及各自的优势</p>]]></description>
+</item></channel>
+</rss>

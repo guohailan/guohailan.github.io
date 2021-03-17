@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>prometheus&#43;grafana监控搭建 - 海蓝的博客</title><meta name="Description" content="运维搬砖"><meta property="og:title" content="prometheus&#43;grafana监控搭建" />
+<meta property="og:description" content="本文主要介绍prometheus&#43;grafana&#43;consul方案监控系统的搭建，本次搭建采用虚拟机方式进行搭建，采取consul进行服务注册" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://guohailan.github.io/prometheus-grafana%E7%9B%91%E6%8E%A7%E6%90%AD%E5%BB%BA/" /><meta property="og:image" content="https://guohailan.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-06-02T23:26:13&#43;00:00" />
+<meta property="article:modified_time" content="2020-06-02T23:26:13&#43;00:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://guohailan.github.io/logo.png"/>
+
+<meta name="twitter:title" content="prometheus&#43;grafana监控搭建"/>
+<meta name="twitter:description" content="本文主要介绍prometheus&#43;grafana&#43;consul方案监控系统的搭建，本次搭建采用虚拟机方式进行搭建，采取consul进行服务注册"/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://guohailan.github.io/prometheus-grafana%E7%9B%91%E6%8E%A7%E6%90%AD%E5%BB%BA/" /><link rel="next" href="https://guohailan.github.io/redis%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E6%90%AD%E5%BB%BA/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "prometheus+grafana监控搭建",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/guohailan.github.io\/prometheus-grafana%E7%9B%91%E6%8E%A7%E6%90%AD%E5%BB%BA\/"
+        },"genre": "posts","keywords": "prometheus, grafana, 监控, 搭建文档","wordcount":  2363 ,
+        "url": "https:\/\/guohailan.github.io\/prometheus-grafana%E7%9B%91%E6%8E%A7%E6%90%AD%E5%BB%BA\/","datePublished": "2020-06-02T23:26:13+00:00","dateModified": "2020-06-02T23:26:13+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "","logo": "https:\/\/guohailan.github.io\/images\/avatar.png"},"author": {
+                "@type": "Person",
+                "name": "guohailan"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="海蓝的博客"><span class="header-title-pre"><i class='far fas fa-blog fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/guohailan" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="海蓝的博客"><span class="header-title-pre"><i class='far fas fa-blog fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/guohailan" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">prometheus&#43;grafana监控搭建</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>guohailan</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/prometheus/"><i class="far fa-folder fa-fw"></i>Prometheus</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-06-02">2020-06-02</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2363 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;<span id="/prometheus-grafana%E7%9B%91%E6%8E%A7%E6%90%AD%E5%BB%BA/" class="leancloud_visitors" data-flag-title="prometheus&#43;grafana监控搭建">
+                        <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/thumbnail/prometheus.png"
+        data-srcset="/images/thumbnail/prometheus.png, /images/thumbnail/prometheus.png 1.5x, /images/thumbnail/prometheus.png 2x"
+        data-sizes="auto"
+        alt="/images/thumbnail/prometheus.png"
+        title="/images/thumbnail/prometheus.png" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#prometheus安装与配置">prometheus安装与配置</a>
+      <ul>
+        <li><a href="#介绍与基本架构">介绍与基本架构</a></li>
+        <li><a href="#安装prometheus-server">安装Prometheus Server</a></li>
+      </ul>
+    </li>
+    <li><a href="#node_exporter安装">node_exporter安装</a></li>
+    <li><a href="#consul">consul</a>
+      <ul>
+        <li><a href="#安装consul">安装consul</a></li>
+        <li><a href="#consul注册与删除">consul注册与删除</a></li>
+      </ul>
+    </li>
+    <li><a href="#grafana">grafana</a>
+      <ul>
+        <li><a href="#安装grafana">安装grafana</a></li>
+        <li><a href="#配置grafana">配置grafana</a>
+          <ul>
+            <li><a href="#数据源">数据源</a></li>
+            <li><a href="#dashboard">dashboard</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>本文主要介绍prometheus+grafana+consul方案监控系统的搭建，本次搭建采用虚拟机方式进行搭建，采取consul进行服务注册</p>
+<h2 id="prometheus安装与配置">prometheus安装与配置</h2>
+<h3 id="介绍与基本架构">介绍与基本架构</h3>
+<p>prometheus是由谷歌研发的一款开源的监控软件，目前已经被云计算本地基金会托管，是继k8s托管的第二个项目。
+<figure><a class="lightgallery" href="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/prometheus.png" title="/images/prometheus&#43;grafana监控搭建/prometheus.png" data-thumbnail="/images/prometheus&#43;grafana监控搭建/prometheus.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/prometheus.png"
+            data-srcset="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/prometheus.png, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/prometheus.png 1.5x, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/prometheus.png 2x"
+            data-sizes="auto"
+            alt="/images/prometheus&#43;grafana监控搭建/prometheus.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+prometheus根据配置定时去拉取各个节点的数据，默认使用的拉取方式是pull，也可以使用pushgateway提供的push方式获取各个监控节点的数据。将获取到的数据存入TSDB，一款时序型数据库。此时prometheus已经获取到了监控数据，可以使用内置的PromQL进行查询。它的报警功能使用Alertmanager提供，Alertmanager是prometheus的告警管理和发送报警的一个组件。prometheus原生的图标功能过于简单，可将prometheus数据接入grafana，由grafana进行统一管理。</p>
+<h3 id="安装prometheus-server">安装Prometheus Server</h3>
+<p>首先从官网下载Prometheus安装程序
+<figure><a class="lightgallery" href="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/prometheusdownload.png" title="/images/prometheus&#43;grafana监控搭建/prometheusdownload.png" data-thumbnail="/images/prometheus&#43;grafana监控搭建/prometheusdownload.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/prometheusdownload.png"
+            data-srcset="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/prometheusdownload.png, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/prometheusdownload.png 1.5x, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/prometheusdownload.png 2x"
+            data-sizes="auto"
+            alt="/images/prometheus&#43;grafana监控搭建/prometheusdownload.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">wget https://github.com/prometheus/prometheus/releases/download/v2.18.1/prometheus-2.18.1.linux-amd64.tar.gz
+</code></pre></td></tr></table>
+</div>
+</div><p>执行执行解压命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">tar -vxf prometheus-2.18.1.linux-amd64.tar.gz
+</code></pre></td></tr></table>
+</div>
+</div><p>编辑解压目录下的prometheus.yml，执行命令：<code>vi prometheus.yml</code>进行基本配置</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="o">[</span>root@guohailan1 prometheus-2.18.1.linux-amd64<span class="o">]</span><span class="c1"># cat prometheus.yml</span>
+<span class="c1"># my global config</span>
+global:
+  scrape_interval: 10s <span class="c1">#每10s采集一次数据</span>
+  evaluation_interval: 10s <span class="c1">#每10s做一次告警检测</span>
+  scrape_timeout: 5s <span class="c1">#拉取一个 target 的超时时间</span>
+alerting: <span class="c1">#Alertmanager 相关配置暂时未配置</span>
+  alertmanagers:
+  - static_configs:
+    - targets:
+rule_files:
+scrape_configs:
+  - job_name: <span class="s1">&#39;prometheus&#39;</span>
+    static_configs:
+    - targets: <span class="o">[</span><span class="s1">&#39;localhost:9090&#39;</span><span class="o">]</span>
+  - job_name: <span class="s1">&#39;linux-exporter&#39;</span>
+    metrics_path: /metrics
+    static_configs:
+    - targets: <span class="o">[</span><span class="s1">&#39;192.168.31.48:9100&#39;</span><span class="o">]</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>配置开机启动，在CentOS8下官方推荐使用systemctl进行开机自启管理</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">cat <span class="s">&lt;&lt; EOF &gt; /usr/lib/systemd/system/prometheus.service
+</span><span class="s">[Unit]
+</span><span class="s">Description=Prometheus
+</span><span class="s">After=network.target
+</span><span class="s">
+</span><span class="s">[Service]
+</span><span class="s">Type=simple
+</span><span class="s">ExecStart=/bin/bash -c &#34;/prometheus/prometheus-2.18.1.linux-amd64/prometheus --web.enable-lifecycle --storage.local.retention 24h0m0s --config.file=/prometheus/prometheus-2.18.1.linux-amd64/prometheus.yml&#34;
+</span><span class="s">
+</span><span class="s">[Install]
+</span><span class="s">WantedBy=multi-user.target
+</span><span class="s">EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>设置自启动和启动prometheus</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">systemctl <span class="nb">enable</span> prometheus
+systemctl start prometheus
+</code></pre></td></tr></table>
+</div>
+</div><p>浏览器端访问<code>http://192.168.31.48:9090/graph</code>，如果出现界面表示搭建成功,如果服务器上有防火墙，可能需要先关闭防火墙或者配置规则
+<figure><a class="lightgallery" href="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/9090.png" title="9090" data-thumbnail="/images/prometheus&#43;grafana监控搭建/9090.png" data-sub-html="<h2> </h2><p>9090</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/9090.png"
+            data-srcset="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/9090.png, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/9090.png 1.5x, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/9090.png 2x"
+            data-sizes="auto"
+            alt="/images/prometheus&#43;grafana监控搭建/9090.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<h2 id="node_exporter安装">node_exporter安装</h2>
+<p>node-exporter用于采集服务器层面的运行指标，包括机器的loadavg、filesystem、meminfo等基础监控，类似于传统主机监控维度的zabbix-agent。node-export由prometheus官方提供、维护，不会捆绑安装，但基本上是必备的exporter。
+<figure><a class="lightgallery" href="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/node_exporter.png" title="/images/prometheus&#43;grafana监控搭建/node_exporter.png" data-thumbnail="/images/prometheus&#43;grafana监控搭建/node_exporter.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/node_exporter.png"
+            data-srcset="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/node_exporter.png, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/node_exporter.png 1.5x, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/node_exporter.png 2x"
+            data-sizes="auto"
+            alt="/images/prometheus&#43;grafana监控搭建/node_exporter.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+从prometheus官网下载相应版本的node_exporter</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">wget https://github.com/prometheus/consul_exporter/releases/download/v0.6.0/consul_exporter-0.6.0.linux-amd64.tar.gz
+</code></pre></td></tr></table>
+</div>
+</div><p>配置开机启动</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">cat <span class="s">&lt;&lt; EOF &gt; /usr/lib/systemd/system/node_exporter.service
+</span><span class="s">[Unit]
+</span><span class="s">Description=node_exporter
+</span><span class="s">After=network.target 
+</span><span class="s">
+</span><span class="s">[Service]
+</span><span class="s">Type=simple
+</span><span class="s">ExecStart=/bin/bash -c &#34;/root/exporter/node_exporter-1.0.0-rc.1.linux-amd64/node_exporter&#34;
+</span><span class="s">
+</span><span class="s">[Install]
+</span><span class="s">WantedBy=multi-user.target
+</span><span class="s">
+</span><span class="s">EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="consul">consul</h2>
+<h3 id="安装consul">安装consul</h3>
+<p>Consul 是一个支持多数据中心分布式高可用的服务发现和配置共享的服务软件,由 HashiCorp 公司用 Go 语言开发, 基于 Mozilla Public License 2.0 的协议进行开源. Consul 支持健康检查,并允许 HTTP 和 DNS 协议调用 API 存储键值对.命令行超级好用的虚拟机管理软件 vgrant 也是 HashiCorp 公司开发的产品.一致性协议采用 Raft 算法,用来保证服务的高可用. 使用 GOSSIP 协议管理成员和广播消息, 并且支持 ACL 访问控制.</p>
+<p>首先从官网上下载consul最新版本并且解压</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">wget https://releases.hashicorp.com/consul/1.7.3/consul_1.7.3_linux_amd64.zip
+unzip consul_1.7.3_linux_amd64.zip
+</code></pre></td></tr></table>
+</div>
+</div><p>本案例搭建为单机版本,将下列命令写入start.sh</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">consul agent -data-dir /prometheus/consul/data -bind<span class="o">=</span>172.0.0.1 -datacenter<span class="o">=</span>dc1 -ui -client<span class="o">=</span>0.0.0.0 -server -http-port<span class="o">=</span><span class="m">8500</span> -bootstrap-expect<span class="o">=</span><span class="m">1</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>配置开机启动</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">cat <span class="s">&lt;&lt; EOF &gt; /usr/lib/systemd/system/consul.service
+</span><span class="s">[Unit]
+</span><span class="s">Description=consul
+</span><span class="s">After=network.target
+</span><span class="s">
+</span><span class="s">[Service]
+</span><span class="s">Type=simple
+</span><span class="s">ExecStart=/bin/bash -c &#34;/prometheus/consul/start.sh&#34;
+</span><span class="s">
+</span><span class="s">[Install]
+</span><span class="s">WantedBy=multi-user.target
+</span><span class="s">EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>访问http://localhost:8500 ,能出现界面表示搭建成功
+<figure><a class="lightgallery" href="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/consul.png" title="/images/prometheus&#43;grafana监控搭建/consul.png" data-thumbnail="/images/prometheus&#43;grafana监控搭建/consul.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/consul.png"
+            data-srcset="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/consul.png, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/consul.png 1.5x, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/consul.png 2x"
+            data-sizes="auto"
+            alt="/images/prometheus&#43;grafana监控搭建/consul.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<h3 id="consul注册与删除">consul注册与删除</h3>
+<p>在服务器上使用如下命令将node_exporter,注册成功后可以看到consul界面上出现了注册的信息，Node Checks和Service Checks绿色表示node_exporter状态正常，点击可查看详情</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">curl -X PUT -d <span class="s1">&#39;{&#34;id&#34;: &#34;192.168.31.48&#34;,&#34;name&#34;: &#34;node-exporter&#34;,&#34;address&#34;: &#34;192.168.31.48&#34;,&#34;port&#34;: 9100,&#34;tags&#34;: [&#34;guohailan1&#34;],&#34;checks&#34;: [{&#34;http&#34;: &#34;http://192.168.31.48:9100/metrics&#34;, &#34;interval&#34;: &#34;5s&#34;}]}&#39;</span>  http://192.168.31.48:8500/v1/agent/service/register
+</code></pre></td></tr></table>
+</div>
+</div><p><figure><a class="lightgallery" href="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/register.png" title="/images/prometheus&#43;grafana监控搭建/register.png" data-thumbnail="/images/prometheus&#43;grafana监控搭建/register.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/register.png"
+            data-srcset="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/register.png, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/register.png 1.5x, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/register.png 2x"
+            data-sizes="auto"
+            alt="/images/prometheus&#43;grafana监控搭建/register.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+如果注册错误或者不使用了可用如下命令删除注册信息</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">curl -X PUT http://192.168.31.48:8500/v1/agent/service/deregister/node-exporter 
+</code></pre></td></tr></table>
+</div>
+</div><p>###prometheus对接consul
+修改prometheus配置文件<code>vi /prometheus/prometheus-2.18.1.linux-amd64/prometheus.yml</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># my global config</span>
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+  scrape_timeout: 5s
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+rule_files:
+scrape_configs:
+  - job_name: <span class="s1">&#39;prometheus&#39;</span>
+    static_configs:
+    - targets: <span class="o">[</span><span class="s1">&#39;localhost:9090&#39;</span><span class="o">]</span>
+  - job_name: <span class="s1">&#39;consul-prometheus&#39;</span>
+    consul_sd_configs:
+    - server: <span class="s1">&#39;192.168.31.48:8500&#39;</span> <span class="c1">#consul地址</span>
+      services: <span class="o">[]</span>
+    relabel_configs:
+    - source_labels: <span class="o">[</span>__meta_consul_service_port<span class="o">]</span> <span class="c1">#prometheus将对匹配上的lables进行操作</span>
+      regex: <span class="m">9100</span>
+      action: keep
+</code></pre></td></tr></table>
+</div>
+</div><p>详细 relabel_configs 配置及说明可以参考 relabel_config 官网说明，这里我简单列举一下里面每个 relabel_action 的作用，方便下边演示。</p>
+<ul>
+<li>replace: 根据 regex 的配置匹配 source_labels 标签的值（注意：多个 source_label 的值会按照 separator 进行拼接），并且将匹配到的值写入到 target_label 当中，如果有多个匹配组，则可以使用 ${1}, ${2} 确定写入的内容。如果没匹配到任何内容则不对 target_label 进行重新， 默认为 replace。</li>
+<li>keep: 丢弃 source_labels 的值中没有匹配到 regex 正则表达式内容的 Target 实例</li>
+<li>drop: 丢弃 source_labels 的值中匹配到 regex 正则表达式内容的 Target 实例</li>
+<li>hashmod: 将 target_label 设置为关联的 source_label 的哈希模块</li>
+<li>labelmap: 根据 regex 去匹配 Target 实例所有标签的名称（注意是名称），并且将捕获到的内容作为为新的标签名称，regex 匹配到标签的的值作为新标签的值</li>
+<li>labeldrop: 对 Target 标签进行过滤，会移除匹配过滤条件的所有标签</li>
+<li>labelkeep: 对 Target 标签进行过滤，会移除不匹配过滤条件的所有标签</li>
+</ul>
+<p>配置完成重启promethus即可看到targets上有新的node_exporter信息，其中Labels中的指标即上一步配置中的 &ldquo;source_labels&rdquo;
+<figure><a class="lightgallery" href="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/targets.png" title="/images/prometheus&#43;grafana监控搭建/targets.png" data-thumbnail="/images/prometheus&#43;grafana监控搭建/targets.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/targets.png"
+            data-srcset="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/targets.png, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/targets.png 1.5x, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/targets.png 2x"
+            data-sizes="auto"
+            alt="/images/prometheus&#43;grafana监控搭建/targets.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<h2 id="grafana">grafana</h2>
+<p>grafana是一个非常酷的数据可视化平台，常常应用于显示监控数据，底层数据源可以支持influxDb、graphite、elasticSeach。</p>
+<h3 id="安装grafana">安装grafana</h3>
+<p>首先还是从<a href="https://grafana.com/grafana/download" target="_blank" rel="noopener noreffer">官网</a>下载安装包,进行安装</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">wget https://dl.grafana.com/oss/release/grafana-7.0.1-1.x86_64.rpm
+sudo yum install grafana-7.0.1-1.x86_64.rpm
+systemctl <span class="nb">enable</span> grafana-server.service <span class="c1">#允许开机启动</span>
+systemctl start grafana-server.service <span class="c1">#启动grafana</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>启动服务之后：http://localhost:3000 。用户名和密码在初始化都是admin和admin
+<figure><a class="lightgallery" href="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/grafana.png" title="/images/prometheus&#43;grafana监控搭建/grafana.png" data-thumbnail="/images/prometheus&#43;grafana监控搭建/grafana.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/grafana.png"
+            data-srcset="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/grafana.png, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/grafana.png 1.5x, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/grafana.png 2x"
+            data-sizes="auto"
+            alt="/images/prometheus&#43;grafana监控搭建/grafana.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<h3 id="配置grafana">配置grafana</h3>
+<h4 id="数据源">数据源</h4>
+<p>首先配置数据源,选择之前搭建的prometheus的连接串，点击保存
+<figure><a class="lightgallery" href="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/data_sources.png" title="/images/prometheus&#43;grafana监控搭建/data_sources.png" data-thumbnail="/images/prometheus&#43;grafana监控搭建/data_sources.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/data_sources.png"
+            data-srcset="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/data_sources.png, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/data_sources.png 1.5x, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/data_sources.png 2x"
+            data-sizes="auto"
+            alt="/images/prometheus&#43;grafana监控搭建/data_sources.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<h4 id="dashboard">dashboard</h4>
+<p>grafana<a href="https://grafana.com/grafana/dashboards?orderBy=name&amp;direction=asc" target="_blank" rel="noopener noreffer">官网</a>有很多大神的作品，可以直接使用
+<figure><a class="lightgallery" href="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/dashboards.png" title="/images/prometheus&#43;grafana监控搭建/dashboards.png" data-thumbnail="/images/prometheus&#43;grafana监控搭建/dashboards.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/dashboards.png"
+            data-srcset="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/dashboards.png, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/dashboards.png 1.5x, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/dashboards.png 2x"
+            data-sizes="auto"
+            alt="/images/prometheus&#43;grafana监控搭建/dashboards.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+grafana支持很多中导入方式，上传json文件或者直接贴json配置，这里因可以使用外网，直接复制模板ID，导入到grafana中
+<figure><a class="lightgallery" href="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/import.png" title="/images/prometheus&#43;grafana监控搭建/import.png" data-thumbnail="/images/prometheus&#43;grafana监控搭建/import.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/import.png"
+            data-srcset="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/import.png, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/import.png 1.5x, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/import.png 2x"
+            data-sizes="auto"
+            alt="/images/prometheus&#43;grafana监控搭建/import.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+导入完成后，即可看到报表信息
+<figure><a class="lightgallery" href="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/view.png" title="/images/prometheus&#43;grafana监控搭建/view.png" data-thumbnail="/images/prometheus&#43;grafana监控搭建/view.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/view.png"
+            data-srcset="/images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/view.png, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/view.png 1.5x, /images/prometheus&#43;grafana%e7%9b%91%e6%8e%a7%e6%90%ad%e5%bb%ba/view.png 2x"
+            data-sizes="auto"
+            alt="/images/prometheus&#43;grafana监控搭建/view.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-06-02</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/prometheus-grafana%E7%9B%91%E6%8E%A7%E6%90%AD%E5%BB%BA/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://guohailan.github.io/prometheus-grafana%E7%9B%91%E6%8E%A7%E6%90%AD%E5%BB%BA/" data-title="prometheus&#43;grafana监控搭建" data-hashtags="prometheus,grafana,监控,搭建文档"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://guohailan.github.io/prometheus-grafana%E7%9B%91%E6%8E%A7%E6%90%AD%E5%BB%BA/" data-hashtag="prometheus"><i class="fab fa-facebook-square fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://guohailan.github.io/prometheus-grafana%E7%9B%91%E6%8E%A7%E6%90%AD%E5%BB%BA/" data-title="prometheus&#43;grafana监控搭建"><i class="fab fa-hacker-news fa-fw"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://guohailan.github.io/prometheus-grafana%E7%9B%91%E6%8E%A7%E6%90%AD%E5%BB%BA/" data-title="prometheus&#43;grafana监控搭建" data-image="/images/thumbnail/prometheus.png"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://guohailan.github.io/prometheus-grafana%E7%9B%91%E6%8E%A7%E6%90%AD%E5%BB%BA/" data-title="prometheus&#43;grafana监控搭建"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/prometheus/">prometheus</a>,&nbsp;<a href="/tags/grafana/">grafana</a>,&nbsp;<a href="/tags/%E7%9B%91%E6%8E%A7/">监控</a>,&nbsp;<a href="/tags/%E6%90%AD%E5%BB%BA%E6%96%87%E6%A1%A3/">搭建文档</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav">
+            <a href="/redis%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E6%90%AD%E5%BB%BA/" class="next" rel="next" title="Redis主从哨兵搭建">Redis主从哨兵搭建<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">guohailan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><script type="text/javascript" src="/lib/valine/Valine.min.js"></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/twemoji/twemoji.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js"></script><script type="text/javascript" src="/lib/katex/auto-render.min.js"></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js"></script><script type="text/javascript" src="/lib/katex/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"g92f6NC1D6E1hrdTFMyRcb87-9Nh9j0Va","appKey":"Ndgct3lUzY9D37skjARFEdDT","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-cn","pageSize":10,"placeholder":"你的评论 ...","recordIP":true,"serverURLs":"https://leancloud.hugoloveit.com","visitor":true}},"data":{"id-1":"My blog","id-2":"My blog"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"},"twemoji":true,"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

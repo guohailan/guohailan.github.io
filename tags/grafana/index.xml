@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>grafana - 标签 - 海蓝的博客</title>
+        <link>https://guohailan.github.io/tags/grafana/</link>
+        <description>grafana - 标签 - 海蓝的博客</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>547585808@qq.com (guohailan)</managingEditor>
+            <webMaster>547585808@qq.com (guohailan)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 02 Jun 2020 23:26:13 &#43;0000</lastBuildDate><atom:link href="https://guohailan.github.io/tags/grafana/" rel="self" type="application/rss+xml" /><item>
+    <title>prometheus&#43;grafana监控搭建</title>
+    <link>https://guohailan.github.io/prometheus-grafana%E7%9B%91%E6%8E%A7%E6%90%AD%E5%BB%BA/</link>
+    <pubDate>Tue, 02 Jun 2020 23:26:13 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://guohailan.github.io/prometheus-grafana%E7%9B%91%E6%8E%A7%E6%90%AD%E5%BB%BA/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/thumbnail/prometheus.png" referrerpolicy="no-referrer">
+            </div><p>本文主要介绍prometheus+grafana+consul方案监控系统的搭建，本次搭建采用虚拟机方式进行搭建，采取consul进行服务注册</p>]]></description>
+</item></channel>
+</rss>

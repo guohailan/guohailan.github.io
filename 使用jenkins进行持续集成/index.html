@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>使用Jenkins进行持续集成 - 海蓝的博客</title><meta name="Description" content="运维搬砖"><meta property="og:title" content="使用Jenkins进行持续集成" />
+<meta property="og:description" content="使用Jenkins进行持续集成，案例在虚拟机上进行搭建，本文主要介绍环境搭建以及配置部分。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://guohailan.github.io/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/" /><meta property="og:image" content="https://guohailan.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-06-10T23:15:33&#43;00:00" />
+<meta property="article:modified_time" content="2020-06-10T23:15:33&#43;00:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://guohailan.github.io/logo.png"/>
+
+<meta name="twitter:title" content="使用Jenkins进行持续集成"/>
+<meta name="twitter:description" content="使用Jenkins进行持续集成，案例在虚拟机上进行搭建，本文主要介绍环境搭建以及配置部分。"/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://guohailan.github.io/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/" /><link rel="prev" href="https://guohailan.github.io/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/" /><link rel="next" href="https://guohailan.github.io/redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "使用Jenkins进行持续集成",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/guohailan.github.io\/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90\/"
+        },"genre": "posts","keywords": "jenkins, 持续集成, 搭建文档","wordcount":  1483 ,
+        "url": "https:\/\/guohailan.github.io\/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90\/","datePublished": "2020-06-10T23:15:33+00:00","dateModified": "2020-06-10T23:15:33+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "","logo": "https:\/\/guohailan.github.io\/images\/avatar.png"},"author": {
+                "@type": "Person",
+                "name": "guohailan"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="海蓝的博客"><span class="header-title-pre"><i class='far fas fa-blog fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/guohailan" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="海蓝的博客"><span class="header-title-pre"><i class='far fas fa-blog fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/guohailan" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">使用Jenkins进行持续集成</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>guohailan</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/jenkins/"><i class="far fa-folder fa-fw"></i>Jenkins</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-06-10">2020-06-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1483 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;<span id="/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/" class="leancloud_visitors" data-flag-title="使用Jenkins进行持续集成">
+                        <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/thumbnail/jenkins.png"
+        data-srcset="/images/thumbnail/jenkins.png, /images/thumbnail/jenkins.png 1.5x, /images/thumbnail/jenkins.png 2x"
+        data-sizes="auto"
+        alt="/images/thumbnail/jenkins.png"
+        title="/images/thumbnail/jenkins.png" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#准备工作">准备工作</a></li>
+    <li><a href="#使用jenkins">使用Jenkins</a>
+      <ul>
+        <li><a href="#解锁jenkins">解锁Jenkins</a></li>
+        <li><a href="#插件初始化">插件初始化</a></li>
+        <li><a href="#主从搭建">主从搭建</a></li>
+        <li><a href="#用户权限配置">用户权限配置</a>
+          <ul>
+            <li><a href="#插件安装">插件安装</a></li>
+          </ul>
+        </li>
+        <li><a href="#权限配置">权限配置</a></li>
+        <li><a href="#创建job">创建JOB</a></li>
+        <li><a href="#触发构建">触发构建</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>使用Jenkins进行持续集成，案例在虚拟机上进行搭建，本文主要介绍环境搭建以及配置部分。</p>
+<h2 id="准备工作">准备工作</h2>
+<p>机器要求：</p>
+<ul>
+<li>256 MB 内存，建议大于 512 MB</li>
+<li>10 GB 的硬盘空间（用于 Jenkins 和 Docker 镜像）</li>
+</ul>
+<p>需要安装以下软件</p>
+<ul>
+<li>Java 8 ( JRE 或者 JDK 都可以)</li>
+</ul>
+<p>首先从<a href="https://www.jenkins.io/zh/" target="_blank" rel="noopener noreffer">官网</a>上下载Jenkins安装包，为方便使用这里我直接下载了war包进行安装</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
+</code></pre></td></tr></table>
+</div>
+</div><p>从国内源下载JDK 8,并且设置JAVA_HOME</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">wget https://repo.huaweicloud.com/java/jdk/8u201-b09/jdk-8u201-linux-x64.tar.gz  <span class="c1"># 下载JDK安装包</span>
+<span class="nb">echo</span> <span class="s1">&#39;export JAVA_HOME=/usr/java/jdk1.8.0_201
+</span><span class="s1">export PATH=$JAVA_HOME/bin:$PATH&#39;</span> &gt;&gt;/etc/profile  <span class="c1"># 配置java环境变量</span>
+<span class="nb">source</span> /etc/profile  <span class="c1"># 使配置的环境变量生效</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>java -version</code>查看java版本,如果出现下图结果，表示JDK安装成功
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/java_home.png" title="/images/使用Jenkins进行持续集成/java_home.png" data-thumbnail="/images/使用Jenkins进行持续集成/java_home.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/java_home.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/java_home.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/java_home.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/java_home.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/java_home.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<h2 id="使用jenkins">使用Jenkins</h2>
+<p>执行<code>java -jar jenkins.war --httpPort=8080</code>启动jenkins，打开浏览器进入链接<code>http://localhost:8080</code>,访问jenkis</p>
+<h3 id="解锁jenkins">解锁Jenkins</h3>
+<p>第一次访问新的Jenkins实例时，系统会要求使用自动生成的密码对其进行解锁。
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/release.png" title="/images/使用Jenkins进行持续集成/release.png" data-thumbnail="/images/使用Jenkins进行持续集成/release.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/release.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/release.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/release.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/release.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/release.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+从Jenkins控制台日志输出中，复制自动生成的字母数字密码（在两组星号之间）
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/password.png" title="/images/使用Jenkins进行持续集成/password.png" data-thumbnail="/images/使用Jenkins进行持续集成/password.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/password.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/password.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/password.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/password.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/password.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<h3 id="插件初始化">插件初始化</h3>
+<p>在解锁Jenkins页面上，将此密码粘贴到管理员密码字段中，然后单击继续,此时会进入插件安装界面,根据需要进行选择，这里我直接选择了自定义安装，暂时不安装任何插件，因为没有更改源，安装很慢</p>
+<ul>
+<li>安装建议的插件 - 安装推荐的一组插件，这些插件基于最常见的用例.</li>
+<li>选择要安装的插件 - 选择安装的插件集。当你第一次访问插件选择页面时，默认选择建议的插件。</li>
+</ul>
+<p><figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/plugin.png" title="/images/使用Jenkins进行持续集成/plugin.png" data-thumbnail="/images/使用Jenkins进行持续集成/plugin.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/plugin.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/plugin.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/plugin.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/plugin.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/plugin.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+插件下载完成后即可进入主页
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/home_page.png" title="/images/使用Jenkins进行持续集成/home_page.png" data-thumbnail="/images/使用Jenkins进行持续集成/home_page.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/home_page.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/home_page.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/home_page.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/home_page.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/home_page.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<h3 id="主从搭建">主从搭建</h3>
+<p>先点击Manage Jenkins，然后点击Manage Nodes and Clouds
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/node.png" title="/images/使用Jenkins进行持续集成/node.png" data-thumbnail="/images/使用Jenkins进行持续集成/node.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/node.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/node.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/node.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/node.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/node.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+点击新建节点
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave.png" title="/images/使用Jenkins进行持续集成/slave.png" data-thumbnail="/images/使用Jenkins进行持续集成/slave.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/slave.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+填写slave相关信息,点击保存
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave_info.png" title="/images/使用Jenkins进行持续集成/slave_info.png" data-thumbnail="/images/使用Jenkins进行持续集成/slave_info.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave_info.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave_info.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave_info.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave_info.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/slave_info.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+在Configure Global Security中启用代理Java Web Start Agent Protocol/4 (TLS 加密)配置
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/agent.png" title="/images/使用Jenkins进行持续集成/agent.png" data-thumbnail="/images/使用Jenkins进行持续集成/agent.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/agent.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/agent.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/agent.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/agent.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/agent.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+然后根据提示，将agent.jar拷贝到slave节点目录，然后根据提示的命令运行slave
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/run_slave.png" title="/images/使用Jenkins进行持续集成/run_slave.png" data-thumbnail="/images/使用Jenkins进行持续集成/run_slave.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/run_slave.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/run_slave.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/run_slave.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/run_slave.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/run_slave.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+此时可以看到slave已经上线
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave1.png" title="/images/使用Jenkins进行持续集成/slave1.png" data-thumbnail="/images/使用Jenkins进行持续集成/slave1.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave1.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave1.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave1.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/slave1.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/slave1.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<h3 id="用户权限配置">用户权限配置</h3>
+<p>在一个部门内部，可能存在多个运维人员，而这些运维人员往往负责不同的项目，但是有可能他们用的又是同一个 Jenkins 的不同用户。那么我们就希望实现一个需求，能够不同的用户登录 Jenkins 以后看到不同的项目。由于jenkins默认的权限控制太过简陋，因此我们引入新的插件<code>Role-based Authorization Strategy</code></p>
+<h4 id="插件安装">插件安装</h4>
+<p>首先因国内直连jenkens的插件中心速度很慢，因此先修改源站为清华大学地址<code>https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json</code>
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/qinghua.png" title="/images/使用Jenkins进行持续集成/qinghua.png" data-thumbnail="/images/使用Jenkins进行持续集成/qinghua.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/qinghua.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/qinghua.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/qinghua.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/qinghua.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/qinghua.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+然后搜索插件名进行安装
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/plugin1.png" title="/images/使用Jenkins进行持续集成/plugin1.png" data-thumbnail="/images/使用Jenkins进行持续集成/plugin1.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/plugin1.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/plugin1.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/plugin1.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/plugin1.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/plugin1.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<h3 id="权限配置">权限配置</h3>
+<p>重启Jenkins以后，再度打开Configure Global Security会发现多了我们刚刚插件的选项，选择Role-Based Strategy，点击保存
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/role.png" title="/images/使用Jenkins进行持续集成/role.png" data-thumbnail="/images/使用Jenkins进行持续集成/role.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/role.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/role.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/role.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/role.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/role.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+这时在Manage Jenkins就会多出一个选项，Manage and Assign Roles
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/manage_role.png" title="/images/使用Jenkins进行持续集成/manage_role.png" data-thumbnail="/images/使用Jenkins进行持续集成/manage_role.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/manage_role.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/manage_role.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/manage_role.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/manage_role.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/manage_role.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+在Manage Roles进行角色以及相关权限添加，有Global roles、Item roles以及Node roles可以分别进行配置
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/global.png" title="/images/使用Jenkins进行持续集成/global.png" data-thumbnail="/images/使用Jenkins进行持续集成/global.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/global.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/global.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/global.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/global.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/global.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+然后点击Assign Roles，进行相关用户的角色授予
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/assign_roles.png" title="/images/使用Jenkins进行持续集成/assign_roles.png" data-thumbnail="/images/使用Jenkins进行持续集成/assign_roles.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/assign_roles.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/assign_roles.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/assign_roles.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/assign_roles.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/assign_roles.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<h3 id="创建job">创建JOB</h3>
+<p>点击新建job，创建一个Freestyle project的JOB
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/myjob.png" title="/images/使用Jenkins进行持续集成/myjob.png" data-thumbnail="/images/使用Jenkins进行持续集成/myjob.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/myjob.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/myjob.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/myjob.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/myjob.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/myjob.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+点击新创建的JOB进行配置，源码管理选择GIT(需要提前安装git插件才会出来这个选项，填入git库地址，以及相关账号及密码)
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/git.png" title="/images/使用Jenkins进行持续集成/git.png" data-thumbnail="/images/使用Jenkins进行持续集成/git.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/git.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/git.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/git.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/git.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/git.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+定时触发器可根据实际情况进行选择，然后配置构建步骤点击保存即可，我本地是部署nginx静态页面，因此直接执行shell命令进行部署
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/deploy.png" title="/images/使用Jenkins进行持续集成/deploy.png" data-thumbnail="/images/使用Jenkins进行持续集成/deploy.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/deploy.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/deploy.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/deploy.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/deploy.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/deploy.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p>
+<h3 id="触发构建">触发构建</h3>
+<p>点击立即构建，即可触发构建任务，本次部署为和jenkins同一台机器上的nginx静态页面
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/build.png" title="/images/使用Jenkins进行持续集成/build.png" data-thumbnail="/images/使用Jenkins进行持续集成/build.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/build.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/build.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/build.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/build.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/build.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure>
+点击控制台输出，可以查看构建过程中的具日志
+<figure><a class="lightgallery" href="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/log.png" title="/images/使用Jenkins进行持续集成/log.png" data-thumbnail="/images/使用Jenkins进行持续集成/log.png" data-sub-html="<h2> </h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/log.png"
+            data-srcset="/images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/log.png, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/log.png 1.5x, /images/%e4%bd%bf%e7%94%a8Jenkins%e8%bf%9b%e8%a1%8c%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90/log.png 2x"
+            data-sizes="auto"
+            alt="/images/使用Jenkins进行持续集成/log.png" />
+    </a><figcaption class="image-caption"> </figcaption>
+    </figure></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-06-10</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://guohailan.github.io/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/" data-title="使用Jenkins进行持续集成" data-hashtags="jenkins,持续集成,搭建文档"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://guohailan.github.io/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/" data-hashtag="jenkins"><i class="fab fa-facebook-square fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://guohailan.github.io/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/" data-title="使用Jenkins进行持续集成"><i class="fab fa-hacker-news fa-fw"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://guohailan.github.io/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/" data-title="使用Jenkins进行持续集成" data-image="/images/thumbnail/jenkins.png"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://guohailan.github.io/%E4%BD%BF%E7%94%A8jenkins%E8%BF%9B%E8%A1%8C%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/" data-title="使用Jenkins进行持续集成"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/jenkins/">jenkins</a>,&nbsp;<a href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/">持续集成</a>,&nbsp;<a href="/tags/%E6%90%AD%E5%BB%BA%E6%96%87%E6%A1%A3/">搭建文档</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/calico%E7%BD%91%E7%BB%9C%E5%92%8Cflannel%E5%AF%B9%E6%AF%94/" class="prev" rel="prev" title="calico网络和flannel对比"><i class="fas fa-angle-left fa-fw"></i>calico网络和flannel对比</a>
+            <a href="/redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="next" rel="next" title="Redis集群搭建">Redis集群搭建<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">guohailan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><script type="text/javascript" src="/lib/valine/Valine.min.js"></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/twemoji/twemoji.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js"></script><script type="text/javascript" src="/lib/katex/auto-render.min.js"></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js"></script><script type="text/javascript" src="/lib/katex/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"g92f6NC1D6E1hrdTFMyRcb87-9Nh9j0Va","appKey":"Ndgct3lUzY9D37skjARFEdDT","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-cn","pageSize":10,"placeholder":"你的评论 ...","recordIP":true,"serverURLs":"https://leancloud.hugoloveit.com","visitor":true}},"data":{"id-1":"My blog","id-2":"My blog"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"},"twemoji":true,"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
