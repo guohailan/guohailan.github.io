@@ -1,24 +1,24 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>中间件 - 分类 - 海蓝的博客</title>
-        <link>https://guohailan.gitee.io/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/</link>
+        <link>https://guohailan.github.io/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/</link>
         <description>中间件 - 分类 - 海蓝的博客</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>547585808@qq.com (guohailan)</managingEditor>
-            <webMaster>547585808@qq.com (guohailan)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 23 Jan 2021 20:17:13 &#43;0000</lastBuildDate><atom:link href="https://guohailan.gitee.io/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>547585808@qq.com (guohailan)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 23 Jan 2021 20:17:13 &#43;0000</lastBuildDate><atom:link href="https://guohailan.github.io/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" rel="self" type="application/rss+xml" /><item>
     <title>Trojan-go搭建</title>
-    <link>https://guohailan.gitee.io/trojan-go%E6%90%AD%E5%BB%BA/</link>
+    <link>https://guohailan.github.io/trojan-go%E6%90%AD%E5%BB%BA/</link>
     <pubDate>Sat, 23 Jan 2021 20:17:13 &#43;0000</pubDate>
     <author>作者</author>
-    <guid>https://guohailan.gitee.io/trojan-go%E6%90%AD%E5%BB%BA/</guid>
+    <guid>https://guohailan.github.io/trojan-go%E6%90%AD%E5%BB%BA/</guid>
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/thumbnail/trojan-go.png" referrerpolicy="no-referrer">
             </div><p>使用trojan-go进行搭建。</p>]]></description>
 </item><item>
     <title>Trojan搭建</title>
-    <link>https://guohailan.gitee.io/trojan%E6%90%AD%E5%BB%BA/</link>
+    <link>https://guohailan.github.io/trojan%E6%90%AD%E5%BB%BA/</link>
     <pubDate>Sun, 17 Jan 2021 18:25:13 &#43;0000</pubDate>
     <author>作者</author>
-    <guid>https://guohailan.gitee.io/trojan%E6%90%AD%E5%BB%BA/</guid>
+    <guid>https://guohailan.github.io/trojan%E6%90%AD%E5%BB%BA/</guid>
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/thumbnail/trojan.png" referrerpolicy="no-referrer">
             </div><p>使用trojan原版进行搭建。</p>]]></description>

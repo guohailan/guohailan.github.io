@@ -1,24 +1,24 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>Redis - 分类 - 海蓝的博客</title>
-        <link>https://guohailan.gitee.io/categories/redis/</link>
+        <link>https://guohailan.github.io/categories/redis/</link>
         <description>Redis - 分类 - 海蓝的博客</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>547585808@qq.com (guohailan)</managingEditor>
-            <webMaster>547585808@qq.com (guohailan)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 18 Jun 2020 22:15:07 &#43;0000</lastBuildDate><atom:link href="https://guohailan.gitee.io/categories/redis/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>547585808@qq.com (guohailan)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 18 Jun 2020 22:15:07 &#43;0000</lastBuildDate><atom:link href="https://guohailan.github.io/categories/redis/" rel="self" type="application/rss+xml" /><item>
     <title>Redis集群搭建</title>
-    <link>https://guohailan.gitee.io/redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
+    <link>https://guohailan.github.io/redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
     <pubDate>Thu, 18 Jun 2020 22:15:07 &#43;0000</pubDate>
     <author>作者</author>
-    <guid>https://guohailan.gitee.io/redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
+    <guid>https://guohailan.github.io/redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/thumbnail/redis.jpg" referrerpolicy="no-referrer">
             </div><p>Redis3.0上加入了cluster模式，实现的redis的分布式存储，本文主要介绍Redis集群的相关搭建。</p>]]></description>
 </item><item>
     <title>Redis主从哨兵搭建</title>
-    <link>https://guohailan.gitee.io/redis%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E6%90%AD%E5%BB%BA/</link>
+    <link>https://guohailan.github.io/redis%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E6%90%AD%E5%BB%BA/</link>
     <pubDate>Sat, 06 Jun 2020 15:47:23 &#43;0000</pubDate>
     <author>作者</author>
-    <guid>https://guohailan.gitee.io/redis%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E6%90%AD%E5%BB%BA/</guid>
+    <guid>https://guohailan.github.io/redis%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E6%90%AD%E5%BB%BA/</guid>
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/thumbnail/redis.jpg" referrerpolicy="no-referrer">
             </div><p>本文章基于最新版本Redis5.0.5版本进行redis主从哨兵模式搭建</p>]]></description>
