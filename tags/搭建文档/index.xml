@@ -29,7 +29,7 @@
     <author>作者</author>
     <guid>https://guohailan.github.io/redis%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E6%90%AD%E5%BB%BA/</guid>
     <description><![CDATA[<div class="featured-image">
-                <img src="/images/thumbnail/redis.jpg" referrerpolicy="no-referrer">
+                <img src="/images/thumbnail/redis2.jpg" referrerpolicy="no-referrer">
             </div><p>本文章基于最新版本Redis5.0.5版本进行redis主从哨兵模式搭建</p>]]></description>
 </item><item>
     <title>prometheus&#43;grafana监控搭建</title>
