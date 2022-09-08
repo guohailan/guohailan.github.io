@@ -8,19 +8,21 @@
     <title>Redis集群搭建</title>
     <link>https://guohailan.github.io/redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
     <pubDate>Thu, 18 Jun 2020 22:15:07 &#43;0000</pubDate>
-    <author>作者</author>
+    <author>guohailan</author>
     <guid>https://guohailan.github.io/redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/thumbnail/redis.jpg" referrerpolicy="no-referrer">
             </div><p>Redis3.0上加入了cluster模式，实现的redis的分布式存储，本文主要介绍Redis集群的相关搭建。</p>]]></description>
-</item><item>
+</item>
+<item>
     <title>Redis主从哨兵搭建</title>
     <link>https://guohailan.github.io/redis%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E6%90%AD%E5%BB%BA/</link>
     <pubDate>Sat, 06 Jun 2020 15:47:23 &#43;0000</pubDate>
-    <author>作者</author>
+    <author>guohailan</author>
     <guid>https://guohailan.github.io/redis%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E6%90%AD%E5%BB%BA/</guid>
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/thumbnail/redis2.jpg" referrerpolicy="no-referrer">
             </div><p>本文章基于最新版本Redis5.0.5版本进行redis主从哨兵模式搭建</p>]]></description>
-</item></channel>
+</item>
+</channel>
 </rss>

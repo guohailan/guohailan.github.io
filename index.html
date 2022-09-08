@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
     <head>
-	<meta name="generator" content="Hugo 0.81.0" />
+	<meta name="generator" content="Hugo 0.102.3" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
         <title>海蓝的博客</title><meta name="Description" content="运维搬砖"><meta property="og:title" content="海蓝的博客" />
 <meta property="og:description" content="运维搬砖" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://guohailan.github.io/" /><meta property="og:image" content="https://guohailan.github.io/logo.png"/>
+<meta property="og:url" content="https://guohailan.github.io/" /><meta property="og:image" content="https://guohailan.github.io/logo.png"/><meta property="og:site_name" content="My cool site" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://guohailan.github.io/logo.png"/>
@@ -20,7 +19,9 @@
 <meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://guohailan.github.io/" /><link rel="alternate" href="/index.xml" type="application/rss+xml" title="海蓝的博客">
-    <link rel="feed" href="/index.xml" type="application/rss+xml" title="海蓝的博客"><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    <link rel="feed" href="/index.xml" type="application/rss+xml" title="海蓝的博客"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "WebSite",
@@ -30,7 +31,7 @@
             },"description": "运维搬砖","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","name": "海蓝的博客"
     }
     </script></head>
-    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -41,18 +42,17 @@
             <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/guohailan" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
-                            <i class="fas fa-search fa-fw"></i>
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
-                            <i class="fas fa-times-circle fa-fw"></i>
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-desktop">
-                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
                         </span>
                     </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
-                    <i class="fas fa-adjust fa-fw"></i>
-                </a>
-            </div>
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
         </div>
     </div>
 </header><header class="mobile" id="header-mobile">
@@ -69,39 +69,51 @@
                     <div class="search mobile" id="search-mobile">
                         <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
-                            <i class="fas fa-search fa-fw"></i>
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
-                            <i class="fas fa-times-circle fa-fw"></i>
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-mobile">
-                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
                         </span>
                     </div>
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         取消
                     </a>
                 </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/guohailan" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
-                <i class="fas fa-adjust fa-fw"></i>
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a></div>
     </div>
-</header>
-<div class="search-dropdown desktop">
-    <div id="search-dropdown-desktop"></div>
-</div>
-<div class="search-dropdown mobile">
-    <div id="search-dropdown-mobile"></div>
-</div>
-<main class="main">
-                <div class="container"><div class="page home" posts><div class="home-profile"><div class="home-avatar"><a href="/posts/" title="所有文章"><img
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="page home" data-home="posts"><div class="home-profile"><div class="home-avatar"><a href="/posts/" title="所有文章"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/images/avatar.png"
         data-srcset="/images/avatar.png, /images/avatar.png 1.5x, /images/avatar.png 2x"
         data-sizes="auto"
         alt="/images/avatar.png"
-        title="/images/avatar.png" /></a></div><h2 class="home-subtitle"><div id="id-3" class="typeit"></div></h2><div class="links"><a href="https://github.com/guohailan" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="mailto:547585808@qq.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw"></i></a></div></div>
+        title="/images/avatar.png" /></a></div><div class="home-subtitle"><div id="id-3" class="typeit"></div></div><div class="links"><a href="https://github.com/guohailan" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github fa-fw" aria-hidden="true"></i></a><a href="mailto:547585808@qq.com" title="Email" rel="me"><i class="far fa-envelope fa-fw" aria-hidden="true"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw" aria-hidden="true"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
+            <a href="/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/thumbnail/k8s_net.jpg"
+        data-srcset="/images/thumbnail/k8s_net.jpg, /images/thumbnail/k8s_net.jpg 1.5x, /images/thumbnail/k8s_net.jpg 2x"
+        data-sizes="auto"
+        alt="/images/thumbnail/k8s_net.jpg"
+        title="/images/thumbnail/k8s_net.jpg" /></a>
+        </div><h1 class="single-title" itemprop="name headline">
+        <a href="/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/">Kubernetes网络模型</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>guohailan</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2022-09-08">2022-09-08</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/k8s/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>k8s</a></span></div><div class="content"><p>本文主要介绍Kubernetes网络模型。</p></div><div class="post-footer">
+        <a href="/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/k8s/">k8s</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
             <a href="/trojan-go%E6%90%AD%E5%BB%BA/"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -112,9 +124,9 @@
         title="/images/thumbnail/trojan-go.png" /></a>
         </div><h1 class="single-title" itemprop="name headline">
         <a href="/trojan-go%E6%90%AD%E5%BB%BA/">Trojan-go搭建</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>guohailan</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2021-01-23">2021-01-23</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"><i class="far fa-folder fa-fw"></i>中间件</a></span></div><div class="content"><p>使用trojan-go进行搭建。</p></div><div class="post-footer">
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>guohailan</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2021-01-23">2021-01-23</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>中间件</a></span></div><div class="content"><p>使用trojan-go进行搭建。</p></div><div class="post-footer">
         <a href="/trojan-go%E6%90%AD%E5%BB%BA/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/torjan/">torjan</a></div></div>
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/torjan/">torjan</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
             <a href="/trojan%E6%90%AD%E5%BB%BA/"><img
         class="lazyload"
@@ -126,9 +138,9 @@
         title="/images/thumbnail/trojan.png" /></a>
         </div><h1 class="single-title" itemprop="name headline">
         <a href="/trojan%E6%90%AD%E5%BB%BA/">Trojan搭建</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>guohailan</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2021-01-17">2021-01-17</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"><i class="far fa-folder fa-fw"></i>中间件</a></span></div><div class="content"><p>使用trojan原版进行搭建。</p></div><div class="post-footer">
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>guohailan</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2021-01-17">2021-01-17</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>中间件</a></span></div><div class="content"><p>使用trojan原版进行搭建。</p></div><div class="post-footer">
         <a href="/trojan%E6%90%AD%E5%BB%BA/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/torjan/">torjan</a></div></div>
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/torjan/">torjan</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
             <a href="/nginx%E9%85%8D%E7%BD%AE%E9%99%90%E6%B5%81/"><img
         class="lazyload"
@@ -140,9 +152,9 @@
         title="/images/thumbnail/nginx-logo.png" /></a>
         </div><h1 class="single-title" itemprop="name headline">
         <a href="/nginx%E9%85%8D%E7%BD%AE%E9%99%90%E6%B5%81/">nginx配置限流</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>guohailan</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2020-11-08">2020-11-08</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/nginx/"><i class="far fa-folder fa-fw"></i>nginx</a></span></div><div class="content"><p>系统设计时一般会预估负载，当系统暴露在公网中时，恶意攻击或正常突发流量等都可能导致系统被压垮，而限流就是保护措施之一。限流即控制流量，本文将记录 Nginx 的一种速率限流设置。</p></div><div class="post-footer">
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>guohailan</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2020-11-08">2020-11-08</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/nginx/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>nginx</a></span></div><div class="content"><p>系统设计时一般会预估负载，当系统暴露在公网中时，恶意攻击或正常突发流量等都可能导致系统被压垮，而限流就是保护措施之一。限流即控制流量，本文将记录 Nginx 的一种速率限流设置。</p></div><div class="post-footer">
         <a href="/nginx%E9%85%8D%E7%BD%AE%E9%99%90%E6%B5%81/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/nginx/">nginx</a>,&nbsp;<a href="/tags/%E9%99%90%E6%B5%81/">限流</a></div></div>
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/nginx/">nginx</a>,&nbsp;<a href="/tags/%E9%99%90%E6%B5%81/">限流</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
             <a href="/goftp-125-data-connection-already-open%E9%97%AE%E9%A2%98/"><img
         class="lazyload"
@@ -154,9 +166,9 @@
         title="/images/thumbnail/goftp.jpg" /></a>
         </div><h1 class="single-title" itemprop="name headline">
         <a href="/goftp-125-data-connection-already-open%E9%97%AE%E9%A2%98/">goftp 125 Data connection already open问题</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>guohailan</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2020-10-19">2020-10-19</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/golang/"><i class="far fa-folder fa-fw"></i>Golang</a></span></div><div class="content"><p>记录一次使用goftp包文件上传异常的问题</p></div><div class="post-footer">
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>guohailan</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2020-10-19">2020-10-19</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/golang/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Golang</a></span></div><div class="content"><p>记录一次使用goftp包文件上传异常的问题</p></div><div class="post-footer">
         <a href="/goftp-125-data-connection-already-open%E9%97%AE%E9%A2%98/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D/">问题定位</a></div></div>
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D/">问题定位</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
             <a href="/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/"><img
         class="lazyload"
@@ -168,23 +180,9 @@
         title="/images/thumbnail/k8s.jpg" /></a>
         </div><h1 class="single-title" itemprop="name headline">
         <a href="/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/">kubeadm搭建k8s 1.18</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>guohailan</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2020-08-20">2020-08-20</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/k8s/"><i class="far fa-folder fa-fw"></i>k8s</a></span></div><div class="content"><p>本文主要介绍k8s搭建，使用官方推荐工具kubeadm进行搭建，ETCD独立部署</p></div><div class="post-footer">
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>guohailan</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2020-08-20">2020-08-20</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/k8s/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>k8s</a></span></div><div class="content"><p>本文主要介绍k8s搭建，使用官方推荐工具kubeadm进行搭建，ETCD独立部署</p></div><div class="post-footer">
         <a href="/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/k8s/">k8s</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
-            <a href="/python%E5%88%86%E6%9E%90%E8%B1%86%E7%93%A3%E5%BD%B1%E8%AF%84/"><img
-        class="lazyload"
-        src="/svg/loading.min.svg"
-        data-src="/images/thumbnail/spider.png"
-        data-srcset="/images/thumbnail/spider.png, /images/thumbnail/spider.png 1.5x, /images/thumbnail/spider.png 2x"
-        data-sizes="auto"
-        alt="/images/thumbnail/spider.png"
-        title="/images/thumbnail/spider.png" /></a>
-        </div><h1 class="single-title" itemprop="name headline">
-        <a href="/python%E5%88%86%E6%9E%90%E8%B1%86%E7%93%A3%E5%BD%B1%E8%AF%84/">python分析豆瓣影评</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>guohailan</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2020-07-05">2020-07-05</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/python/"><i class="far fa-folder fa-fw"></i>Python</a></span></div><div class="content"><p>本文主要对当前热门剧《隐秘的角落》进行豆瓣短评以及评价进行可视化分析，数据抓取主要为python编写的爬虫。</p></div><div class="post-footer">
-        <a href="/python%E5%88%86%E6%9E%90%E8%B1%86%E7%93%A3%E5%BD%B1%E8%AF%84/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/">可视化</a>,&nbsp;<a href="/tags/%E7%88%AC%E8%99%AB/">爬虫</a></div></div>
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/k8s/">k8s</a></div></div>
 </article><ul class="pagination"><li class="page-item active">
                     <span class="page-link">
                         <a href="/">1</a>
@@ -195,14 +193,14 @@
                     </span>
                 </li></ul></div></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">guohailan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2020 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">guohailan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
-                <i class="fas fa-arrow-up fa-fw"></i>
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
             </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
-                <i class="fas fa-comment fa-fw"></i>
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"data":{"id-1":"My blog","id-2":"My blog","id-3":"专注于运维搬砖"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"],"id-3":["id-3"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"data":{"id-1":"My blog","id-2":"My blog","id-3":"专注于运维搬砖"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"],"id-3":["id-3"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

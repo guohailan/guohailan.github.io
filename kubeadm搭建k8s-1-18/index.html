@@ -4,13 +4,12 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
         <title>kubeadm搭建k8s 1.18 - 海蓝的博客</title><meta name="Description" content="运维搬砖"><meta property="og:title" content="kubeadm搭建k8s 1.18" />
 <meta property="og:description" content="本文主要介绍k8s搭建，使用官方推荐工具kubeadm进行搭建，ETCD独立部署" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" /><meta property="og:image" content="https://guohailan.github.io/logo.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-08-20T20:58:38&#43;00:00" />
-<meta property="article:modified_time" content="2020-08-20T20:58:38&#43;00:00" />
+<meta property="article:published_time" content="2020-08-20T20:58:38+00:00" />
+<meta property="article:modified_time" content="2020-08-20T20:58:38+00:00" /><meta property="og:site_name" content="My cool site" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://guohailan.github.io/logo.png"/>
@@ -20,7 +19,9 @@
 <meta name="application-name" content="LoveIt">
 <meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" /><link rel="prev" href="https://guohailan.github.io/python%E5%88%86%E6%9E%90%E8%B1%86%E7%93%A3%E5%BD%B1%E8%AF%84/" /><link rel="next" href="https://guohailan.github.io/goftp-125-data-connection-already-open%E9%97%AE%E9%A2%98/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" /><link rel="prev" href="https://guohailan.github.io/python%E5%88%86%E6%9E%90%E8%B1%86%E7%93%A3%E5%BD%B1%E8%AF%84/" /><link rel="next" href="https://guohailan.github.io/goftp-125-data-connection-already-open%E9%97%AE%E9%A2%98/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -29,7 +30,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/guohailan.github.io\/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18\/"
-        },"genre": "posts","keywords": "k8s","wordcount":  3348 ,
+        },"genre": "posts","keywords": "k8s","wordcount":  3340 ,
         "url": "https:\/\/guohailan.github.io\/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18\/","datePublished": "2020-08-20T20:58:38+00:00","dateModified": "2020-08-20T20:58:38+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "","logo": "https:\/\/guohailan.github.io\/images\/avatar.png"},"author": {
@@ -38,7 +39,7 @@
             },"description": ""
     }
     </script></head>
-    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -49,18 +50,17 @@
             <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/guohailan" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
-                            <i class="fas fa-search fa-fw"></i>
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
-                            <i class="fas fa-times-circle fa-fw"></i>
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-desktop">
-                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
                         </span>
                     </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
-                    <i class="fas fa-adjust fa-fw"></i>
-                </a>
-            </div>
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
         </div>
     </div>
 </header><header class="mobile" id="header-mobile">
@@ -77,38 +77,36 @@
                     <div class="search mobile" id="search-mobile">
                         <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
-                            <i class="fas fa-search fa-fw"></i>
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
-                            <i class="fas fa-times-circle fa-fw"></i>
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-mobile">
-                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
                         </span>
                     </div>
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         取消
                     </a>
                 </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/guohailan" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
-                <i class="fas fa-adjust fa-fw"></i>
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a></div>
     </div>
-</header>
-<div class="search-dropdown desktop">
-    <div id="search-dropdown-desktop"></div>
-</div>
-<div class="search-dropdown mobile">
-    <div id="search-dropdown-mobile"></div>
-</div>
-<main class="main">
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">目录</h2>
             <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animated flipInX">kubeadm搭建k8s 1.18</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>guohailan</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/k8s/"><i class="far fa-folder fa-fw"></i>k8s</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-08-20">2020-08-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 3348 字&nbsp;
-                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 7 分钟&nbsp;<span id="/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" class="leancloud_visitors" data-flag-title="kubeadm搭建k8s 1.18">
-                        <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">kubeadm搭建k8s 1.18</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>guohailan</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/k8s/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>k8s</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2020-08-20">2020-08-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3340 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;<span id="/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" class="leancloud_visitors" data-flag-title="kubeadm搭建k8s 1.18">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -117,10 +115,10 @@
         data-srcset="/images/thumbnail/k8s.jpg, /images/thumbnail/k8s.jpg 1.5x, /images/thumbnail/k8s.jpg 2x"
         data-sizes="auto"
         alt="/images/thumbnail/k8s.jpg"
-        title="/images/thumbnail/k8s.jpg" /></div><div class="details toc" id="toc-static"  kept="">
+        title="/images/thumbnail/k8s.jpg" /></div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
-                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
@@ -169,16 +167,16 @@
 <p>添加阿里镜像源地址</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>安装docker出现如下错误,当前服务器上安装的containerd.io版本为1.2.0-3.el7版本过低</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -194,49 +192,49 @@
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="o">[</span>root@guohailan3 ~<span class="o">]</span><span class="c1"># yum -y install docker-ce</span>
-上次元数据过期检查：0:00:07 前，执行于 2020年05月24日 星期日 03时42分48秒。
-错误：
- 问题: package docker-ce-3:19.03.9-3.el7.x86_64 requires containerd.io &gt;<span class="o">=</span> 1.2.2-3, but none of the providers can be installed
-  - cannot install the best candidate <span class="k">for</span> the job
-  - package containerd.io-1.2.10-3.2.el7.x86_64 is excluded
-  - package containerd.io-1.2.13-3.1.el7.x86_64 is excluded
-  - package containerd.io-1.2.13-3.2.el7.x86_64 is excluded
-  - package containerd.io-1.2.2-3.3.el7.x86_64 is excluded
-  - package containerd.io-1.2.2-3.el7.x86_64 is excluded
-  - package containerd.io-1.2.4-3.1.el7.x86_64 is excluded
-  - package containerd.io-1.2.5-3.1.el7.x86_64 is excluded
-  - package containerd.io-1.2.6-3.3.el7.x86_64 is excluded
-<span class="o">(</span>尝试添加 <span class="s1">&#39;--skip-broken&#39;</span> 来跳过无法安装的软件包 或 <span class="s1">&#39;--nobest&#39;</span> 来不只使用最佳选择的软件包<span class="o">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">[</span>root@guohailan3 ~<span class="o">]</span><span class="c1"># yum -y install docker-ce</span>
+</span></span><span class="line"><span class="cl">上次元数据过期检查：0:00:07 前，执行于 2020年05月24日 星期日 03时42分48秒。
+</span></span><span class="line"><span class="cl">错误：
+</span></span><span class="line"><span class="cl"> 问题: package docker-ce-3:19.03.9-3.el7.x86_64 requires containerd.io &gt;<span class="o">=</span> 1.2.2-3, but none of the providers can be installed
+</span></span><span class="line"><span class="cl">  - cannot install the best candidate <span class="k">for</span> the job
+</span></span><span class="line"><span class="cl">  - package containerd.io-1.2.10-3.2.el7.x86_64 is excluded
+</span></span><span class="line"><span class="cl">  - package containerd.io-1.2.13-3.1.el7.x86_64 is excluded
+</span></span><span class="line"><span class="cl">  - package containerd.io-1.2.13-3.2.el7.x86_64 is excluded
+</span></span><span class="line"><span class="cl">  - package containerd.io-1.2.2-3.3.el7.x86_64 is excluded
+</span></span><span class="line"><span class="cl">  - package containerd.io-1.2.2-3.el7.x86_64 is excluded
+</span></span><span class="line"><span class="cl">  - package containerd.io-1.2.4-3.1.el7.x86_64 is excluded
+</span></span><span class="line"><span class="cl">  - package containerd.io-1.2.5-3.1.el7.x86_64 is excluded
+</span></span><span class="line"><span class="cl">  - package containerd.io-1.2.6-3.3.el7.x86_64 is excluded
+</span></span><span class="line"><span class="cl"><span class="o">(</span>尝试添加 <span class="s1">&#39;--skip-broken&#39;</span> 来跳过无法安装的软件包 或 <span class="s1">&#39;--nobest&#39;</span> 来不只使用最佳选择的软件包<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>升级containerd.io，再次进行安装</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">wget https://download.docker.com/linux/centos/7/x86_64/edge/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
-yum install containerd.io-1.2.6-3.3.el7.x86_64.rpm
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">wget https://download.docker.com/linux/centos/7/x86_64/edge/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
+</span></span><span class="line"><span class="cl">yum install containerd.io-1.2.6-3.3.el7.x86_64.rpm
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>配置开机启动和启动docker</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">systemctl <span class="nb">enable</span> docker
-systemctl start docker
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">systemctl <span class="nb">enable</span> docker
+</span></span><span class="line"><span class="cl">systemctl start docker
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>优化docker参数</p>
-<p><a href="https://kubernetes.io/zh/docs/setup/production-environment/container-runtimes/" target="_blank" rel="noopener noreffer">官方文档</a>表示，更改设置，令容器运行时和kubelet使用systemd作为cgroup驱动，以此使系统更为稳定。</p>
+<p><a href="https://kubernetes.io/zh/docs/setup/production-environment/container-runtimes/" target="_blank" rel="noopener noreffer ">官方文档</a>表示，更改设置，令容器运行时和kubelet使用systemd作为cgroup驱动，以此使系统更为稳定。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -254,29 +252,29 @@ systemctl start docker
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">tee /etc/docker/daemon.json <span class="s">&lt;&lt;-&#39;EOF&#39;
-</span><span class="s">{
-</span><span class="s">  &#34;registry-mirrors&#34;: [&#34;https://bk6kzfqm.mirror.aliyuncs.com&#34;],
-</span><span class="s">  &#34;exec-opts&#34;: [&#34;native.cgroupdriver=systemd&#34;],
-</span><span class="s">  &#34;log-driver&#34;: &#34;json-file&#34;,
-</span><span class="s">  &#34;log-opts&#34;: {
-</span><span class="s">    &#34;max-size&#34;: &#34;100m&#34;
-</span><span class="s">  },
-</span><span class="s">  &#34;storage-driver&#34;: &#34;overlay2&#34;,
-</span><span class="s">  &#34;storage-opts&#34;: [
-</span><span class="s">    &#34;overlay2.override_kernel_check=true&#34;
-</span><span class="s">  ]
-</span><span class="s">}
-</span><span class="s">EOF</span>
-systemctl daemon-reload <span class="c1"># 重新加载</span>
-systemctl restart docker <span class="c1"># 重启docker</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tee /etc/docker/daemon.json <span class="s">&lt;&lt;-&#39;EOF&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s">{
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;registry-mirrors&#34;: [&#34;https://bk6kzfqm.mirror.aliyuncs.com&#34;],
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;exec-opts&#34;: [&#34;native.cgroupdriver=systemd&#34;],
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;log-driver&#34;: &#34;json-file&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;log-opts&#34;: {
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;max-size&#34;: &#34;100m&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  },
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;storage-driver&#34;: &#34;overlay2&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;storage-opts&#34;: [
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;overlay2.override_kernel_check=true&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  ]
+</span></span></span><span class="line"><span class="cl"><span class="s">}
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">systemctl daemon-reload <span class="c1"># 重新加载</span>
+</span></span><span class="line"><span class="cl">systemctl restart docker <span class="c1"># 重启docker</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="kubernet-安装">kubernet 安装</h2>
 <h3 id="安装kubectl">安装kubectl</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -292,28 +290,28 @@ systemctl restart docker <span class="c1"># 重启docker</span>
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1">#无法连接google，配置了阿里的源</span>
-cat <span class="s">&lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo
-</span><span class="s">[kubernetes]
-</span><span class="s">name=Kubernetes
-</span><span class="s">baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
-</span><span class="s">enabled=1
-</span><span class="s">gpgcheck=0
-</span><span class="s">EOF</span>
-yum install -y kubectl
-
-setenforce <span class="m">0</span> <span class="c1">#暂时关闭selinux</span>
-sed -i <span class="s1">&#39;s/SELINUX=permissive/SELINUX=disabled/&#39;</span> /etc/sysconfig/selinux <span class="c1">#Kubernetes 1.8开始要求关闭系统的Swap，如果不关闭，默认配置下kubelet将无法启动。</span>
-swapoff -a
-yum install -y kubeadm kubelet <span class="c1">#安装kubeadm kubelet工具</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">#无法连接google，配置了阿里的源</span>
+</span></span><span class="line"><span class="cl">cat <span class="s">&lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo
+</span></span></span><span class="line"><span class="cl"><span class="s">[kubernetes]
+</span></span></span><span class="line"><span class="cl"><span class="s">name=Kubernetes
+</span></span></span><span class="line"><span class="cl"><span class="s">baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
+</span></span></span><span class="line"><span class="cl"><span class="s">enabled=1
+</span></span></span><span class="line"><span class="cl"><span class="s">gpgcheck=0
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">yum install -y kubectl
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">setenforce <span class="m">0</span> <span class="c1">#暂时关闭selinux</span>
+</span></span><span class="line"><span class="cl">sed -i <span class="s1">&#39;s/SELINUX=permissive/SELINUX=disabled/&#39;</span> /etc/sysconfig/selinux <span class="c1">#Kubernetes 1.8开始要求关闭系统的Swap，如果不关闭，默认配置下kubelet将无法启动。</span>
+</span></span><span class="line"><span class="cl">swapoff -a
+</span></span><span class="line"><span class="cl">yum install -y kubeadm kubelet <span class="c1">#安装kubeadm kubelet工具</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="准备证书">准备证书</h3>
 <p>证书需要在一台机器上生成，拷贝到别的机器上</p>
 <h4 id="准备证书管理工具">准备证书管理工具</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -326,23 +324,23 @@ yum install -y kubeadm kubelet <span class="c1">#安装kubeadm kubelet工具</sp
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
-chmod +x cfssl_linux-amd64
-mv cfssl_linux-amd64 /usr/bin/cfssl
-
-wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
-chmod +x cfssljson_linux-amd64
-mv cfssljson_linux-amd64 /usr/bin/cfssljson
-
-wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
-chmod +x cfssl-certinfo_linux-amd64
-mv cfssl-certinfo_linux-amd64 /usr/bin/cfssl-certinfo
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+</span></span><span class="line"><span class="cl">chmod +x cfssl_linux-amd64
+</span></span><span class="line"><span class="cl">mv cfssl_linux-amd64 /usr/bin/cfssl
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+</span></span><span class="line"><span class="cl">chmod +x cfssljson_linux-amd64
+</span></span><span class="line"><span class="cl">mv cfssljson_linux-amd64 /usr/bin/cfssljson
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
+</span></span><span class="line"><span class="cl">chmod +x cfssl-certinfo_linux-amd64
+</span></span><span class="line"><span class="cl">mv cfssl-certinfo_linux-amd64 /usr/bin/cfssl-certinfo
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="生成etcd的tls-秘钥和证书">生成ETCD的TLS 秘钥和证书</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -367,30 +365,30 @@ mv cfssl-certinfo_linux-amd64 /usr/bin/cfssl-certinfo
 </span><span class="lnt">23
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># 创建 CA 配置文件</span>
-mkdir ssl <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ssl
-cfssl print-defaults csr &gt; csr.json
-cat &gt; config.json <span class="s">&lt;&lt;EOF
-</span><span class="s">{
-</span><span class="s">&#34;signing&#34;: {
-</span><span class="s">    &#34;default&#34;: {
-</span><span class="s">      &#34;expiry&#34;: &#34;8760h&#34;
-</span><span class="s">      },
-</span><span class="s">    &#34;profiles&#34;: {
-</span><span class="s">      &#34;kubernetes&#34;: {
-</span><span class="s">        &#34;usages&#34;: [
-</span><span class="s">            &#34;signing&#34;,
-</span><span class="s">            &#34;key encipherment&#34;,
-</span><span class="s">            &#34;server auth&#34;,
-</span><span class="s">            &#34;client auth&#34;
-</span><span class="s">        ],
-</span><span class="s">        &#34;expiry&#34;: &#34;8760h&#34;
-</span><span class="s">      }
-</span><span class="s">    }
-</span><span class="s">}
-</span><span class="s">}
-</span><span class="s">EOF</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 创建 CA 配置文件</span>
+</span></span><span class="line"><span class="cl">mkdir ssl <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ssl
+</span></span><span class="line"><span class="cl">cfssl print-defaults csr &gt; csr.json
+</span></span><span class="line"><span class="cl">cat &gt; config.json <span class="s">&lt;&lt;EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">{
+</span></span></span><span class="line"><span class="cl"><span class="s">&#34;signing&#34;: {
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;default&#34;: {
+</span></span></span><span class="line"><span class="cl"><span class="s">      &#34;expiry&#34;: &#34;8760h&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      },
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;profiles&#34;: {
+</span></span></span><span class="line"><span class="cl"><span class="s">      &#34;kubernetes&#34;: {
+</span></span></span><span class="line"><span class="cl"><span class="s">        &#34;usages&#34;: [
+</span></span></span><span class="line"><span class="cl"><span class="s">            &#34;signing&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">            &#34;key encipherment&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">            &#34;server auth&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">            &#34;client auth&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        ],
+</span></span></span><span class="line"><span class="cl"><span class="s">        &#34;expiry&#34;: &#34;8760h&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      }
+</span></span></span><span class="line"><span class="cl"><span class="s">    }
+</span></span></span><span class="line"><span class="cl"><span class="s">}
+</span></span></span><span class="line"><span class="cl"><span class="s">}
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>config.json：可以定义多个 profiles，分别指定不同的过期时间、使用场景等参数；后续在签名证书时使用某个 profile；</li>
@@ -401,7 +399,7 @@ cat &gt; config.json <span class="s">&lt;&lt;EOF
 <h4 id="创建ca证书请求">创建ca证书请求</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -421,25 +419,25 @@ cat &gt; config.json <span class="s">&lt;&lt;EOF
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">cat &gt; ca-csr.json <span class="s">&lt;&lt;EOF
-</span><span class="s">{
-</span><span class="s">    &#34;CN&#34;: &#34;kubernetes&#34;,
-</span><span class="s">    &#34;key&#34;: {
-</span><span class="s">        &#34;algo&#34;: &#34;rsa&#34;,
-</span><span class="s">        &#34;size&#34;: 2048
-</span><span class="s">    },
-</span><span class="s">    &#34;names&#34;: [
-</span><span class="s">        {
-</span><span class="s">            &#34;C&#34;: &#34;CN&#34;,
-</span><span class="s">            &#34;L&#34;: &#34;GuangDong&#34;,
-</span><span class="s">            &#34;ST&#34;: &#34;ShenZhen&#34;,
-</span><span class="s">            &#34;O&#34;: &#34;k8s&#34;,
-</span><span class="s">            &#34;OU&#34;: &#34;System&#34;
-</span><span class="s">        }
-</span><span class="s">    ]
-</span><span class="s">}
-</span><span class="s">EOF</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat &gt; ca-csr.json <span class="s">&lt;&lt;EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">{
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;CN&#34;: &#34;kubernetes&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;key&#34;: {
+</span></span></span><span class="line"><span class="cl"><span class="s">        &#34;algo&#34;: &#34;rsa&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">        &#34;size&#34;: 2048
+</span></span></span><span class="line"><span class="cl"><span class="s">    },
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;names&#34;: [
+</span></span></span><span class="line"><span class="cl"><span class="s">        {
+</span></span></span><span class="line"><span class="cl"><span class="s">            &#34;C&#34;: &#34;CN&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">            &#34;L&#34;: &#34;GuangDong&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">            &#34;ST&#34;: &#34;ShenZhen&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">            &#34;O&#34;: &#34;k8s&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">            &#34;OU&#34;: &#34;System&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        }
+</span></span></span><span class="line"><span class="cl"><span class="s">    ]
+</span></span></span><span class="line"><span class="cl"><span class="s">}
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>&ldquo;CN&rdquo;：Common Name，kube-apiserver 从证书中提取该字段作为请求的用户名 (User Name)；浏览器使用该字段验证网站是否合法；</li>
@@ -448,16 +446,16 @@ cat &gt; config.json <span class="s">&lt;&lt;EOF
 <h4 id="创建ca证书和私钥">创建CA证书和私钥</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">cfssl gencert -initca ca-csr.json <span class="p">|</span> cfssljson -bare ca
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cfssl gencert -initca ca-csr.json <span class="p">|</span> cfssljson -bare ca
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="创建-etcd-证书签名请求">创建 etcd 证书签名请求</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -482,30 +480,30 @@ cat &gt; config.json <span class="s">&lt;&lt;EOF
 </span><span class="lnt">23
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">cat &gt; etcd-csr.json <span class="s">&lt;&lt;EOF
-</span><span class="s">{
-</span><span class="s">  &#34;CN&#34;: &#34;etcd&#34;,
-</span><span class="s">  &#34;hosts&#34;: [
-</span><span class="s">    &#34;192.168.31.48&#34;,
-</span><span class="s">    &#34;192.168.31.137&#34;,
-</span><span class="s">    &#34;192.168.31.226&#34;
-</span><span class="s">  ],
-</span><span class="s">  &#34;key&#34;: {
-</span><span class="s">    &#34;algo&#34;: &#34;rsa&#34;,
-</span><span class="s">    &#34;size&#34;: 2048
-</span><span class="s">  },
-</span><span class="s">  &#34;names&#34;: [
-</span><span class="s">    {
-</span><span class="s">      &#34;C&#34;: &#34;CN&#34;,
-</span><span class="s">      &#34;ST&#34;: &#34;GuangDong&#34;,
-</span><span class="s">      &#34;L&#34;: &#34;ShenZhen&#34;,
-</span><span class="s">      &#34;O&#34;: &#34;k8s&#34;,
-</span><span class="s">      &#34;OU&#34;: &#34;System&#34;
-</span><span class="s">    }
-</span><span class="s">  ]
-</span><span class="s">}
-</span><span class="s">EOF</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat &gt; etcd-csr.json <span class="s">&lt;&lt;EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">{
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;CN&#34;: &#34;etcd&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;hosts&#34;: [
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;192.168.31.48&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;192.168.31.137&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;192.168.31.226&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  ],
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;key&#34;: {
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;algo&#34;: &#34;rsa&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;size&#34;: 2048
+</span></span></span><span class="line"><span class="cl"><span class="s">  },
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;names&#34;: [
+</span></span></span><span class="line"><span class="cl"><span class="s">    {
+</span></span></span><span class="line"><span class="cl"><span class="s">      &#34;C&#34;: &#34;CN&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">      &#34;ST&#34;: &#34;GuangDong&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">      &#34;L&#34;: &#34;ShenZhen&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">      &#34;O&#34;: &#34;k8s&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">      &#34;OU&#34;: &#34;System&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    }
+</span></span></span><span class="line"><span class="cl"><span class="s">  ]
+</span></span></span><span class="line"><span class="cl"><span class="s">}
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>hosts 字段指定授权使用该证书的 etcd 节点 IP；</li>
@@ -514,66 +512,66 @@ cat &gt; config.json <span class="s">&lt;&lt;EOF
 <h4 id="生成-etcd-证书和私钥">生成 etcd 证书和私钥</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">cfssl gencert -ca<span class="o">=</span>ca.pem <span class="se">\
-</span><span class="se"></span>  -ca-key<span class="o">=</span>ca-key.pem <span class="se">\
-</span><span class="se"></span>  -config<span class="o">=</span>config.json <span class="se">\
-</span><span class="se"></span>  -profile<span class="o">=</span>kubernetes etcd-csr.json <span class="p">|</span> cfssljson -bare etcd
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cfssl gencert -ca<span class="o">=</span>ca.pem <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -ca-key<span class="o">=</span>ca-key.pem <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -config<span class="o">=</span>config.json <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -profile<span class="o">=</span>kubernetes etcd-csr.json <span class="p">|</span> cfssljson -bare etcd
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="将证书拷贝到所有服务器的指定目录">将证书拷贝到所有服务器的指定目录</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">mkdir -p /etc/etcd/ssl
-cp etcd.pem etcd-key.pem  ca.pem /etc/etcd/ssl/
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir -p /etc/etcd/ssl
+</span></span><span class="line"><span class="cl">cp etcd.pem etcd-key.pem  ca.pem /etc/etcd/ssl/
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="安装etcd">安装ETCD</h3>
 <h4 id="准备二进制文件">准备二进制文件</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">wget https://github.com/coreos/etcd/releases/download/v3.4.9/etcd-v3.4.9-linux-amd64.tar.gz
-tar -vxf etcd-v3.4.9-linux-amd64.tar.gz
-cp etcd-v3.4.9-linux-amd64/etcd* /usr/bin/
-chmod +x /usr/bin/etcd*
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">wget https://github.com/coreos/etcd/releases/download/v3.4.9/etcd-v3.4.9-linux-amd64.tar.gz
+</span></span><span class="line"><span class="cl">tar -vxf etcd-v3.4.9-linux-amd64.tar.gz
+</span></span><span class="line"><span class="cl">cp etcd-v3.4.9-linux-amd64/etcd* /usr/bin/
+</span></span><span class="line"><span class="cl">chmod +x /usr/bin/etcd*
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="部署环境变量">部署环境变量</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">NODE_NAME</span><span class="o">=</span><span class="s2">&#34;etcd-host1&#34;</span> <span class="c1">#当前部署的机器名称(随便定义，只要能区分不同机器即可)</span>
-<span class="nb">export</span> <span class="nv">NODE_IP</span><span class="o">=</span><span class="s2">&#34;192.168.31.48&#34;</span> <span class="c1"># 当前部署的机器 IP</span>
-<span class="nb">export</span> <span class="nb">export</span> <span class="nv">NODE_IPS</span><span class="o">=</span><span class="s2">&#34;192.168.31.48 192.168.31.137 192.168.31.226&#34;</span> <span class="c1"># etcd 集群所有机器 IP</span>
-<span class="c1"># etcd 集群间通信的IP和端口</span>
-<span class="nb">export</span> <span class="nv">ETCD_NODES</span><span class="o">=</span><span class="s2">&#34;etcd-host1=https://192.168.31.48:2380,etcd-host2=https://192.168.31.137:2380,etcd-host3=https://192.168.31.226:2380&#34;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">NODE_NAME</span><span class="o">=</span><span class="s2">&#34;etcd-host1&#34;</span> <span class="c1">#当前部署的机器名称(随便定义，只要能区分不同机器即可)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">NODE_IP</span><span class="o">=</span><span class="s2">&#34;192.168.31.48&#34;</span> <span class="c1"># 当前部署的机器 IP</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nb">export</span> <span class="nv">NODE_IPS</span><span class="o">=</span><span class="s2">&#34;192.168.31.48 192.168.31.137 192.168.31.226&#34;</span> <span class="c1"># etcd 集群所有机器 IP</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># etcd 集群间通信的IP和端口</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">ETCD_NODES</span><span class="o">=</span><span class="s2">&#34;etcd-host1=https://192.168.31.48:2380,etcd-host2=https://192.168.31.137:2380,etcd-host3=https://192.168.31.226:2380&#34;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="创建etcd的systemd-unit文件">创建etcd的systemd unit文件</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -609,41 +607,41 @@ chmod +x /usr/bin/etcd*
 </span><span class="lnt">34
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">mkdir -p /var/lib/etcd  <span class="c1"># 必须先创建工作目录</span>
-cat &gt; etcd.service <span class="s">&lt;&lt;EOF
-</span><span class="s">[Unit]
-</span><span class="s">Description=Etcd Server
-</span><span class="s">After=network.target
-</span><span class="s">After=network-online.target
-</span><span class="s">Wants=network-online.target
-</span><span class="s">
-</span><span class="s">[Service]
-</span><span class="s">Type=notify
-</span><span class="s">WorkingDirectory=/var/lib/etcd/
-</span><span class="s">ExecStart=/usr/bin/etcd \\
-</span><span class="s">  --name=${NODE_NAME} \\
-</span><span class="s">  --cert-file=/etc/etcd/ssl/etcd.pem \\
-</span><span class="s">  --key-file=/etc/etcd/ssl/etcd-key.pem \\
-</span><span class="s">  --peer-cert-file=/etc/etcd/ssl/etcd.pem \\
-</span><span class="s">  --peer-key-file=/etc/etcd/ssl/etcd-key.pem \\
-</span><span class="s">  --trusted-ca-file=/etc/etcd/ssl/ca.pem \\
-</span><span class="s">  --peer-trusted-ca-file=/etc/etcd/ssl/ca.pem \\
-</span><span class="s">  --initial-advertise-peer-urls=https://${NODE_IP}:2380 \\
-</span><span class="s">  --listen-peer-urls=https://${NODE_IP}:2380 \\
-</span><span class="s">  --listen-client-urls=https://${NODE_IP}:2379,http://127.0.0.1:2379 \\
-</span><span class="s">  --advertise-client-urls=https://${NODE_IP}:2379 \\
-</span><span class="s">  --initial-cluster-token=etcd-cluster-0 \\
-</span><span class="s">  --initial-cluster=${ETCD_NODES} \\
-</span><span class="s">  --initial-cluster-state=new \\
-</span><span class="s">  --data-dir=/var/lib/etcd
-</span><span class="s">Restart=on-failure
-</span><span class="s">RestartSec=5
-</span><span class="s">LimitNOFILE=65536
-</span><span class="s">
-</span><span class="s">[Install]
-</span><span class="s">WantedBy=multi-user.target
-</span><span class="s">EOF</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir -p /var/lib/etcd  <span class="c1"># 必须先创建工作目录</span>
+</span></span><span class="line"><span class="cl">cat &gt; etcd.service <span class="s">&lt;&lt;EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">[Unit]
+</span></span></span><span class="line"><span class="cl"><span class="s">Description=Etcd Server
+</span></span></span><span class="line"><span class="cl"><span class="s">After=network.target
+</span></span></span><span class="line"><span class="cl"><span class="s">After=network-online.target
+</span></span></span><span class="line"><span class="cl"><span class="s">Wants=network-online.target
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">[Service]
+</span></span></span><span class="line"><span class="cl"><span class="s">Type=notify
+</span></span></span><span class="line"><span class="cl"><span class="s">WorkingDirectory=/var/lib/etcd/
+</span></span></span><span class="line"><span class="cl"><span class="s">ExecStart=/usr/bin/etcd \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --name=${NODE_NAME} \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --cert-file=/etc/etcd/ssl/etcd.pem \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --key-file=/etc/etcd/ssl/etcd-key.pem \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --peer-cert-file=/etc/etcd/ssl/etcd.pem \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --peer-key-file=/etc/etcd/ssl/etcd-key.pem \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --trusted-ca-file=/etc/etcd/ssl/ca.pem \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --peer-trusted-ca-file=/etc/etcd/ssl/ca.pem \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --initial-advertise-peer-urls=https://${NODE_IP}:2380 \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --listen-peer-urls=https://${NODE_IP}:2380 \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --listen-client-urls=https://${NODE_IP}:2379,http://127.0.0.1:2379 \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --advertise-client-urls=https://${NODE_IP}:2379 \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --initial-cluster-token=etcd-cluster-0 \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --initial-cluster=${ETCD_NODES} \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --initial-cluster-state=new \\
+</span></span></span><span class="line"><span class="cl"><span class="s">  --data-dir=/var/lib/etcd
+</span></span></span><span class="line"><span class="cl"><span class="s">Restart=on-failure
+</span></span></span><span class="line"><span class="cl"><span class="s">RestartSec=5
+</span></span></span><span class="line"><span class="cl"><span class="s">LimitNOFILE=65536
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">[Install]
+</span></span></span><span class="line"><span class="cl"><span class="s">WantedBy=multi-user.target
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>&ndash;name：方便理解的节点名称，默认为 default，在集群中应该保持唯一，可以使用 hostname</li>
@@ -662,43 +660,43 @@ cat &gt; etcd.service <span class="s">&lt;&lt;EOF
 <h4 id="启动-etcd-服务">启动 etcd 服务</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">mv etcd.service /etc/systemd/system/
-systemctl daemon-reload
-systemctl <span class="nb">enable</span> etcd
-systemctl start etcd
-systemctl status etcd
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mv etcd.service /etc/systemd/system/
+</span></span><span class="line"><span class="cl">systemctl daemon-reload
+</span></span><span class="line"><span class="cl">systemctl <span class="nb">enable</span> etcd
+</span></span><span class="line"><span class="cl">systemctl start etcd
+</span></span><span class="line"><span class="cl">systemctl status etcd
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="验证服务并配置etcdctl工具">验证服务并配置etcdctl工具</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">etcdctl --endpoints<span class="o">=</span><span class="s2">&#34;https://192.168.31.48:2379,https://192.168.31.137:2379,https://192.168.31.226:2379&#34;</span> --cacert<span class="o">=</span>/etc/etcd/ssl/ca.pem --cert<span class="o">=</span>/etc/etcd/ssl/etcd.pem --key<span class="o">=</span>/etc/etcd/ssl/etcd-key.pem endpoint health
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">etcdctl --endpoints<span class="o">=</span><span class="s2">&#34;https://192.168.31.48:2379,https://192.168.31.137:2379,https://192.168.31.226:2379&#34;</span> --cacert<span class="o">=</span>/etc/etcd/ssl/ca.pem --cert<span class="o">=</span>/etc/etcd/ssl/etcd.pem --key<span class="o">=</span>/etc/etcd/ssl/etcd-key.pem endpoint health
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>为了后续操作方便可配置alias</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">alias</span> <span class="nv">etcdctl</span><span class="o">=</span><span class="s1">&#39;etcdctl --cacert=/etc/etcd/ssl/ca.pem --cert=/etc/etcd/ssl/etcd.pem --key=/etc/etcd/ssl/etcd-key.pem --endpoints=&#34;https://192.168.31.48:2379,https://192.168.31.137:2379,https://192.168.31.226:2379&#34;&#39;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">alias</span> <span class="nv">etcdctl</span><span class="o">=</span><span class="s1">&#39;etcdctl --cacert=/etc/etcd/ssl/ca.pem --cert=/etc/etcd/ssl/etcd.pem --key=/etc/etcd/ssl/etcd-key.pem --endpoints=&#34;https://192.168.31.48:2379,https://192.168.31.137:2379,https://192.168.31.226:2379&#34;&#39;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="初始化master">初始化master</h3>
 <h4 id="创建master配置文件">创建master配置文件</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -723,53 +721,53 @@ systemctl status etcd
 </span><span class="lnt">23
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">cat &gt; /etc/kubernetes/config.yaml  <span class="s">&lt;&lt;EOF
-</span><span class="s">apiVersion: kubeadm.k8s.io/v1beta1
-</span><span class="s"># 国内不能访问 Google，修改为阿里云
-</span><span class="s">imageRepository: registry.aliyuncs.com/google_containers
-</span><span class="s">kind: ClusterConfiguration
-</span><span class="s">### etcd 配置及秘钥 ###
-</span><span class="s">etcd:
-</span><span class="s">  external:
-</span><span class="s">    endpoints:
-</span><span class="s">    - https://192.168.31.48:2379
-</span><span class="s">    - https://192.168.31.137:2379
-</span><span class="s">    - https://192.168.31.226:2379
-</span><span class="s">    caFile: /etc/etcd/ssl/ca.pem
-</span><span class="s">    certFile: /etc/etcd/ssl/etcd.pem
-</span><span class="s">    keyFile: /etc/etcd/ssl/etcd-key.pem
-</span><span class="s">    dataDir: /var/lib/etcd
-</span><span class="s">### calico 网络插件的子网 ###
-</span><span class="s">networking:
-</span><span class="s">  podSubnet: &#34;10.0.0.0/16&#34;
-</span><span class="s">  serviceSubnet: &#34;10.96.0.0/12&#34;
-</span><span class="s">###k8s的版本###
-</span><span class="s">kubernetesVersion: 1.18.0
-</span><span class="s">EOF</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat &gt; /etc/kubernetes/config.yaml  <span class="s">&lt;&lt;EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">apiVersion: kubeadm.k8s.io/v1beta1
+</span></span></span><span class="line"><span class="cl"><span class="s"># 国内不能访问 Google，修改为阿里云
+</span></span></span><span class="line"><span class="cl"><span class="s">imageRepository: registry.aliyuncs.com/google_containers
+</span></span></span><span class="line"><span class="cl"><span class="s">kind: ClusterConfiguration
+</span></span></span><span class="line"><span class="cl"><span class="s">### etcd 配置及秘钥 ###
+</span></span></span><span class="line"><span class="cl"><span class="s">etcd:
+</span></span></span><span class="line"><span class="cl"><span class="s">  external:
+</span></span></span><span class="line"><span class="cl"><span class="s">    endpoints:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - https://192.168.31.48:2379
+</span></span></span><span class="line"><span class="cl"><span class="s">    - https://192.168.31.137:2379
+</span></span></span><span class="line"><span class="cl"><span class="s">    - https://192.168.31.226:2379
+</span></span></span><span class="line"><span class="cl"><span class="s">    caFile: /etc/etcd/ssl/ca.pem
+</span></span></span><span class="line"><span class="cl"><span class="s">    certFile: /etc/etcd/ssl/etcd.pem
+</span></span></span><span class="line"><span class="cl"><span class="s">    keyFile: /etc/etcd/ssl/etcd-key.pem
+</span></span></span><span class="line"><span class="cl"><span class="s">    dataDir: /var/lib/etcd
+</span></span></span><span class="line"><span class="cl"><span class="s">### calico 网络插件的子网 ###
+</span></span></span><span class="line"><span class="cl"><span class="s">networking:
+</span></span></span><span class="line"><span class="cl"><span class="s">  podSubnet: &#34;10.0.0.0/16&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  serviceSubnet: &#34;10.96.0.0/12&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">###k8s的版本###
+</span></span></span><span class="line"><span class="cl"><span class="s">kubernetesVersion: 1.18.0
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="初始化master-1">初始化master</h4>
 <p>可查看依赖的镜像版本</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">kubeadm config images list --kubernetes-version<span class="o">=</span>v1.18.0
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubeadm config images list --kubernetes-version<span class="o">=</span>v1.18.0
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">kubeadm init --config /etc/kubernetes/config.yaml <span class="c1">#主节点进行初始化</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubeadm init --config /etc/kubernetes/config.yaml <span class="c1">#主节点进行初始化</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>出现如下提示表示配置成功</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -785,21 +783,21 @@ systemctl status etcd
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">Your Kubernetes control-plane has initialized successfully!
-
-To start using your cluster, you need to run the following as a regular user:
-  mkdir -p <span class="nv">$HOME</span>/.kube
-  sudo cp -i /etc/kubernetes/admin.conf <span class="nv">$HOME</span>/.kube/config
-  sudo chown <span class="k">$(</span>id -u<span class="k">)</span>:<span class="k">$(</span>id -g<span class="k">)</span> <span class="nv">$HOME</span>/.kube/config
-
-You should now deploy a pod network to the cluster.
-Run <span class="s2">&#34;kubectl apply -f [podnetwork].yaml&#34;</span> with one of the options listed at:
-  https://kubernetes.io/docs/concepts/cluster-administration/addons/
-
-Then you can join any number of worker nodes by running the following on each as root:
-kubeadm join 192.168.31.226:6443 --token v7b8zo.5hc1au8vl96xqyie <span class="se">\
-</span><span class="se"></span>    --discovery-token-ca-cert-hash sha256:908597386cd0311f24e2d7c95e40559e3137523078e69e1262643c6161abc10a
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Your Kubernetes control-plane has initialized successfully!
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">To start using your cluster, you need to run the following as a regular user:
+</span></span><span class="line"><span class="cl">  mkdir -p <span class="nv">$HOME</span>/.kube
+</span></span><span class="line"><span class="cl">  sudo cp -i /etc/kubernetes/admin.conf <span class="nv">$HOME</span>/.kube/config
+</span></span><span class="line"><span class="cl">  sudo chown <span class="k">$(</span>id -u<span class="k">)</span>:<span class="k">$(</span>id -g<span class="k">)</span> <span class="nv">$HOME</span>/.kube/config
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You should now deploy a pod network to the cluster.
+</span></span><span class="line"><span class="cl">Run <span class="s2">&#34;kubectl apply -f [podnetwork].yaml&#34;</span> with one of the options listed at:
+</span></span><span class="line"><span class="cl">  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Then you can join any number of worker nodes by running the following on each as root:
+</span></span><span class="line"><span class="cl">kubeadm join 192.168.31.226:6443 --token v7b8zo.5hc1au8vl96xqyie <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --discovery-token-ca-cert-hash sha256:908597386cd0311f24e2d7c95e40559e3137523078e69e1262643c6161abc10a
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>如果出现如下错误，需要按照上图提示，配置kube/config</p>
 <p><figure><a class="lightgallery" href="/images/kubeadm%e6%90%ad%e5%bb%bak8s-1-18/image-20200815180231821.png" title="image-20200815180231821" data-thumbnail="/images/kubeadm搭建k8s-1-18/image-20200815180231821.png" data-sub-html="<h2> </h2><p>image-20200815180231821</p>">
@@ -816,7 +814,7 @@ kubeadm join 192.168.31.226:6443 --token v7b8zo.5hc1au8vl96xqyie <span class="se
 <p>如果希望部署多master需要用下面的配置文件，token和tokenTTL在初始化第一台master的时候注释掉</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -858,61 +856,61 @@ kubeadm join 192.168.31.226:6443 --token v7b8zo.5hc1au8vl96xqyie <span class="se
 </span><span class="lnt">40
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">cat &gt; /etc/kubernetes/config.yaml  <span class="s">&lt;&lt;EOF
-</span><span class="s">apiVersion: kubeadm.k8s.io/v1beta1
-</span><span class="s"># 国内不能访问 Google，修改为阿里云
-</span><span class="s">imageRepository: registry.aliyuncs.com/google_containers
-</span><span class="s">kind: ClusterConfiguration
-</span><span class="s">### etcd 配置及秘钥 ###
-</span><span class="s">etcd:
-</span><span class="s">  external:
-</span><span class="s">    endpoints:
-</span><span class="s">    - https://192.168.31.48:2379
-</span><span class="s">    - https://192.168.31.137:2379
-</span><span class="s">    - https://192.168.31.226:2379
-</span><span class="s">    caFile: /etc/etcd/ssl/ca.pem
-</span><span class="s">    certFile: /etc/etcd/ssl/etcd.pem
-</span><span class="s">    keyFile: /etc/etcd/ssl/etcd-key.pem
-</span><span class="s">    dataDir: /var/lib/etcd
-</span><span class="s">### calico 网络插件的子网 ###
-</span><span class="s">networking:
-</span><span class="s">  podSubnet: &#34;10.0.0.0/16&#34;
-</span><span class="s">  serviceSubnet: &#34;10.96.0.0/12&#34;
-</span><span class="s">###k8s的版本###
-</span><span class="s">kubernetesVersion: 1.18.0
-</span><span class="s">######多master配置#######
-</span><span class="s">#下面的token是master1节点初始化完成后，join得到的token值
-</span><span class="s">token: &#34;1gddb4.cs1chtdrk5r9aa0i&#34;
-</span><span class="s">tokenTTL: &#34;0s&#34;
-</span><span class="s">#是kubeadm帮我们apiserver生成对外服务的证书用的。因为外部访问apiserver是通过负载均衡实现的，所以作为服务端提供的证书中应该写的hosts是负载均衡的地址。
-</span><span class="s">apiServerCertSANs:
-</span><span class="s">#允许访问apiserver的地址
-</span><span class="s">- 192.168.30.189 #apiserver的负载均衡ip，或者是slb的ip
-</span><span class="s">- k8s-master1
-</span><span class="s">- k8s-slave1
-</span><span class="s">- k8s-slave2
-</span><span class="s">- 192.168.31.48
-</span><span class="s">- 192.168.31.137
-</span><span class="s">- 192.168.31.226
-</span><span class="s">apiServerExtraArgs:
-</span><span class="s"> apiserver-count: &#34;3&#34;
-</span><span class="s"> endpoint-reconciler-type: lease
-</span><span class="s">EOF</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat &gt; /etc/kubernetes/config.yaml  <span class="s">&lt;&lt;EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">apiVersion: kubeadm.k8s.io/v1beta1
+</span></span></span><span class="line"><span class="cl"><span class="s"># 国内不能访问 Google，修改为阿里云
+</span></span></span><span class="line"><span class="cl"><span class="s">imageRepository: registry.aliyuncs.com/google_containers
+</span></span></span><span class="line"><span class="cl"><span class="s">kind: ClusterConfiguration
+</span></span></span><span class="line"><span class="cl"><span class="s">### etcd 配置及秘钥 ###
+</span></span></span><span class="line"><span class="cl"><span class="s">etcd:
+</span></span></span><span class="line"><span class="cl"><span class="s">  external:
+</span></span></span><span class="line"><span class="cl"><span class="s">    endpoints:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - https://192.168.31.48:2379
+</span></span></span><span class="line"><span class="cl"><span class="s">    - https://192.168.31.137:2379
+</span></span></span><span class="line"><span class="cl"><span class="s">    - https://192.168.31.226:2379
+</span></span></span><span class="line"><span class="cl"><span class="s">    caFile: /etc/etcd/ssl/ca.pem
+</span></span></span><span class="line"><span class="cl"><span class="s">    certFile: /etc/etcd/ssl/etcd.pem
+</span></span></span><span class="line"><span class="cl"><span class="s">    keyFile: /etc/etcd/ssl/etcd-key.pem
+</span></span></span><span class="line"><span class="cl"><span class="s">    dataDir: /var/lib/etcd
+</span></span></span><span class="line"><span class="cl"><span class="s">### calico 网络插件的子网 ###
+</span></span></span><span class="line"><span class="cl"><span class="s">networking:
+</span></span></span><span class="line"><span class="cl"><span class="s">  podSubnet: &#34;10.0.0.0/16&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  serviceSubnet: &#34;10.96.0.0/12&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">###k8s的版本###
+</span></span></span><span class="line"><span class="cl"><span class="s">kubernetesVersion: 1.18.0
+</span></span></span><span class="line"><span class="cl"><span class="s">######多master配置#######
+</span></span></span><span class="line"><span class="cl"><span class="s">#下面的token是master1节点初始化完成后，join得到的token值
+</span></span></span><span class="line"><span class="cl"><span class="s">token: &#34;1gddb4.cs1chtdrk5r9aa0i&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">tokenTTL: &#34;0s&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">#是kubeadm帮我们apiserver生成对外服务的证书用的。因为外部访问apiserver是通过负载均衡实现的，所以作为服务端提供的证书中应该写的hosts是负载均衡的地址。
+</span></span></span><span class="line"><span class="cl"><span class="s">apiServerCertSANs:
+</span></span></span><span class="line"><span class="cl"><span class="s">#允许访问apiserver的地址
+</span></span></span><span class="line"><span class="cl"><span class="s">- 192.168.30.189 #apiserver的负载均衡ip，或者是slb的ip
+</span></span></span><span class="line"><span class="cl"><span class="s">- k8s-master1
+</span></span></span><span class="line"><span class="cl"><span class="s">- k8s-slave1
+</span></span></span><span class="line"><span class="cl"><span class="s">- k8s-slave2
+</span></span></span><span class="line"><span class="cl"><span class="s">- 192.168.31.48
+</span></span></span><span class="line"><span class="cl"><span class="s">- 192.168.31.137
+</span></span></span><span class="line"><span class="cl"><span class="s">- 192.168.31.226
+</span></span></span><span class="line"><span class="cl"><span class="s">apiServerExtraArgs:
+</span></span></span><span class="line"><span class="cl"><span class="s"> apiserver-count: &#34;3&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s"> endpoint-reconciler-type: lease
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="calico安装">calico安装</h2>
 <p>安装calico</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">kubectl apply -f https://docs.projectcalico.org/v3.15/manifests/calico.yaml
-https://docs.projectcalico.org/manifests/calico-etcd.yaml
-kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl apply -f https://docs.projectcalico.org/v3.15/manifests/calico.yaml
+</span></span><span class="line"><span class="cl">https://docs.projectcalico.org/manifests/calico-etcd.yaml
+</span></span><span class="line"><span class="cl">kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>查看节点启动详情，calico3个进程都启动完毕</p>
 <p><figure><a class="lightgallery" href="/images/kubeadm%e6%90%ad%e5%bb%bak8s-1-18/image-20200815183600446.png" title="image-20200815183600446" data-thumbnail="/images/kubeadm搭建k8s-1-18/image-20200815183600446.png" data-sub-html="<h2> </h2><p>image-20200815183600446</p>">
@@ -929,11 +927,11 @@ kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 <p>在另一台节点执行下面命令，加入集群</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">kubeadm join 192.168.31.226:6443 --token v7b8zo.5hc1au8vl96xqyie     --discovery-token-ca-cert-hash sha256:908597386cd0311f24e2d7c95e40559e3137523078e69e1262643c6161abc10a
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubeadm join 192.168.31.226:6443 --token v7b8zo.5hc1au8vl96xqyie     --discovery-token-ca-cert-hash sha256:908597386cd0311f24e2d7c95e40559e3137523078e69e1262643c6161abc10a
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>出现如下提示表示加入成功</p>
 <p><figure><a class="lightgallery" href="/images/kubeadm%e6%90%ad%e5%bb%bak8s-1-18/image-20200815181858759.png" title="image-20200815181858759" data-thumbnail="/images/kubeadm搭建k8s-1-18/image-20200815181858759.png" data-sub-html="<h2> </h2><p>image-20200815181858759</p>">
@@ -961,41 +959,39 @@ kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
         <div class="post-info-line">
             <div class="post-info-mod">
                 <span>更新于 2020-08-20</span>
-            </div>
-            <div class="post-info-license"></div>
-        </div>
+            </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
                             <a class="link-to-markdown" href="/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/index.md" target="_blank">阅读原始文档</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" data-title="kubeadm搭建k8s 1.18" data-hashtags="k8s"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" data-hashtag="k8s"><i class="fab fa-facebook-square fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" data-title="kubeadm搭建k8s 1.18"><i class="fab fa-hacker-news fa-fw"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" data-title="kubeadm搭建k8s 1.18" data-image="/images/thumbnail/k8s.jpg"><i class="fab fa-weibo fa-fw"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" data-title="kubeadm搭建k8s 1.18"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg"></i></a></span>
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" data-title="kubeadm搭建k8s 1.18" data-hashtags="k8s"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" data-hashtag="k8s"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" data-title="kubeadm搭建k8s 1.18"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" data-title="kubeadm搭建k8s 1.18" data-image="/images/thumbnail/k8s.jpg"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://guohailan.github.io/kubeadm%E6%90%AD%E5%BB%BAk8s-1-18/" data-title="kubeadm搭建k8s 1.18"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/baidu.svg" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/k8s/">k8s</a></section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/k8s/">k8s</a></section>
         <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/python%E5%88%86%E6%9E%90%E8%B1%86%E7%93%A3%E5%BD%B1%E8%AF%84/" class="prev" rel="prev" title="python分析豆瓣影评"><i class="fas fa-angle-left fa-fw"></i>python分析豆瓣影评</a>
-            <a href="/goftp-125-data-connection-already-open%E9%97%AE%E9%A2%98/" class="next" rel="next" title="goftp 125 Data connection already open问题">goftp 125 Data connection already open问题<i class="fas fa-angle-right fa-fw"></i></a></div>
+    <div class="post-nav"><a href="/python%E5%88%86%E6%9E%90%E8%B1%86%E7%93%A3%E5%BD%B1%E8%AF%84/" class="prev" rel="prev" title="python分析豆瓣影评"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>python分析豆瓣影评</a>
+            <a href="/goftp-125-data-connection-already-open%E9%97%AE%E9%A2%98/" class="next" rel="next" title="goftp 125 Data connection already open问题">goftp 125 Data connection already open问题<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
 <div id="comments"><div id="valine" class="comment"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">guohailan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2020 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">guohailan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
-                <i class="fas fa-arrow-up fa-fw"></i>
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
             </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
-                <i class="fas fa-comment fa-fw"></i>
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><script type="text/javascript" src="/lib/valine/Valine.min.js"></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/twemoji/twemoji.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js"></script><script type="text/javascript" src="/lib/katex/auto-render.min.js"></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js"></script><script type="text/javascript" src="/lib/katex/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"fok8VPlm0I0mJLCDA5SMvn1o-gzGzoHsz","appKey":"Ghs1UwIPIu4r6tEHw1jLYSFG","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-cn","pageSize":10,"placeholder":"说些什么...","recordIP":true,"serverURLs":"https://fok8vplm.lc-cn-n1-shared.com","visitor":true}},"data":{"id-1":"My blog","id-2":"My blog"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"},"twemoji":true,"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.5.0/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"fok8VPlm0I0mJLCDA5SMvn1o-gzGzoHsz","appKey":"Ghs1UwIPIu4r6tEHw1jLYSFG","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-CN","pageSize":10,"placeholder":"说些什么...","recordIP":true,"serverURLs":"https://fok8vplm.lc-cn-n1-shared.com","visitor":true}},"data":{"id-1":"My blog","id-2":"My blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"},"twemoji":true,"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

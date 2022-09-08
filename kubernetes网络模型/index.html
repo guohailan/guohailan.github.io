@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Kubernetes网络模型 - 海蓝的博客</title><meta name="Description" content="运维搬砖"><meta property="og:title" content="Kubernetes网络模型" />
+<meta property="og:description" content="本文主要介绍Kubernetes网络模型。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://guohailan.github.io/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/" /><meta property="og:image" content="https://guohailan.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-09-08T23:20:28+08:00" />
+<meta property="article:modified_time" content="2022-09-08T23:20:28+08:00" /><meta property="og:site_name" content="My cool site" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://guohailan.github.io/logo.png"/>
+
+<meta name="twitter:title" content="Kubernetes网络模型"/>
+<meta name="twitter:description" content="本文主要介绍Kubernetes网络模型。"/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://guohailan.github.io/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/" /><link rel="prev" href="https://guohailan.github.io/trojan-go%E6%90%AD%E5%BB%BA/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Kubernetes网络模型",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/guohailan.github.io\/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B\/"
+        },"genre": "posts","keywords": "k8s","wordcount":  9562 ,
+        "url": "https:\/\/guohailan.github.io\/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B\/","datePublished": "2022-09-08T23:20:28+08:00","dateModified": "2022-09-08T23:20:28+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "","logo": "https:\/\/guohailan.github.io\/images\/avatar.png"},"author": {
+                "@type": "Person",
+                "name": "guohailan"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="海蓝的博客"><span class="header-title-pre"><i class='far fas fa-blog fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="https://github.com/guohailan" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="海蓝的博客"><span class="header-title-pre"><i class='far fas fa-blog fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="https://github.com/guohailan" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Kubernetes网络模型</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>guohailan</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/k8s/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>k8s</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-08">2022-09-08</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 9562 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 20 分钟&nbsp;<span id="/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/" class="leancloud_visitors" data-flag-title="Kubernetes网络模型">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/thumbnail/k8s_net.jpg"
+        data-srcset="/images/thumbnail/k8s_net.jpg, /images/thumbnail/k8s_net.jpg 1.5x, /images/thumbnail/k8s_net.jpg 2x"
+        data-sizes="auto"
+        alt="/images/thumbnail/k8s_net.jpg"
+        title="/images/thumbnail/k8s_net.jpg" /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#kubernetes基本概念">Kubernetes基本概念</a>
+      <ul>
+        <li><a href="#kubernetes-api-server">Kubernetes API Server</a></li>
+        <li><a href="#控制器controller">控制器Controller</a></li>
+        <li><a href="#容器组pod">容器组Pod</a></li>
+        <li><a href="#节点node">节点Node</a></li>
+      </ul>
+    </li>
+    <li><a href="#kubernetes网络模型">Kubernetes网络模型</a></li>
+    <li><a href="#container-to-container的网络">Container-to-Container的网络</a></li>
+    <li><a href="#pod-to-pod的网络">Pod-to-Pod的网络</a>
+      <ul>
+        <li><a href="#数据包的传递pod-to-pod同节点">数据包的传递：Pod-to-Pod，同节点</a></li>
+        <li><a href="#数据包的传递pod-to-pod跨节点">数据包的传递：Pod-to-Pod，跨节点</a></li>
+      </ul>
+    </li>
+    <li><a href="#pod-to-service的网络">Pod-to-Service的网络</a>
+      <ul>
+        <li><a href="#netfilter-and-iptables">netfilter and iptables</a></li>
+        <li><a href="#ipvs">IPVS</a></li>
+        <li><a href="#数据包的传递pod-to-service">数据包的传递：Pod-to-Service</a></li>
+        <li><a href="#数据包的传递service-to-pod">数据包的传递：Service-to-Pod</a></li>
+        <li><a href="#使用dns">使用DNS</a></li>
+      </ul>
+    </li>
+    <li><a href="#internet-to-service的网络">Internet-to-Service的网络</a>
+      <ul>
+        <li><a href="#出方向---从集群内部访问互联网">出方向 - 从集群内部访问互联网</a>
+          <ul>
+            <li><a href="#数据包的传递node-to-internet">数据包的传递：Node-to-Internet</a></li>
+          </ul>
+        </li>
+        <li><a href="#入方向---从互联网访问kubernetes">入方向 - 从互联网访问Kubernetes</a>
+          <ul>
+            <li><a href="#layer-4loadbalancer">Layer 4：LoadBalancer</a></li>
+            <li><a href="#数据包的传递loadbalancer-to-service">数据包的传递：LoadBalancer-to-Service</a></li>
+            <li><a href="#layer-7ingress控制器">Layer 7：Ingress控制器</a></li>
+            <li><a href="#数据包的传递ingress-to-service">数据包的传递：Ingress-to-Service</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>本文主要介绍Kubernetes网络模型。</p>
+<p>Kubernetes 用来在集群上运行分布式系统。分布式系统的本质使得网络组件在 Kubernetes 中是至关重要也不可或缺的。理解 Kubernetes 的网络模型可以帮助你更好的在 Kubernetes 上运行、监控、诊断你的应用程序。</p>
+<p>网络是一个很宽泛的领域，其中有许多成熟的技术。对于不熟悉网络整体背景的人而言，要将各种新的概念、旧的概念放到一起来理解（例如，网络名称空间、虚拟网卡、IP forwarding、网络地址转换等），并融汇贯通，是一个非常困难的事情。本文将尝试揭开 Kubernetes 网络的面纱，并讨论 Kubernetes 相关的网络技术，以及这些技术是如何支持 Kubernetes 网络模型的。</p>
+<p>文章有点长，分成主要的几个部分：</p>
+<ul>
+<li>首先讨论一些 Kubernetes 基础的术语，确保大家对关键措辞的理解是一致的</li>
+<li>然后讨论 Kubernetes 网络模型，及其设计和实现</li>
+<li>主要的内容是：通过不同的 use case 深入探讨 Kubernetes 中网络流量是如何路由的</li>
+</ul>
+<h2 id="kubernetes基本概念">Kubernetes基本概念</h2>
+<p>Kubernetes 基于少数几个核心概念，不断完善，提供了非常丰富和实用的功能。本章节罗列了这些核心概念，并简要的做了概述，以便更好地支持后面的讨论。熟悉 Kubernetes 的读者可跳过这个章节。</p>
+<h3 id="kubernetes-api-server">Kubernetes API Server</h3>
+<p>操作 Kubernetes 的方式，是调用 Kubernetes API Server（kube-apiserver）的 API 接口。kubectl、kubernetes dashboard、kuboard 都是通过调用 kube-apiserver 的接口实现对 kubernetes 的管理。API server 最终将集群状态的数据存储在 <a href="https://github.com/coreos/etcd" target="_blank" rel="noopener noreffer ">etcd (opens new window)</a>中。</p>
+<h3 id="控制器controller">控制器Controller</h3>
+<p>控制器（Controller）是 Kubernetes 中最核心的抽象概念。在用户通过 kube-apiserver 声明了期望的状态以后，控制器通过不断监控 apiserver 中的当前状态，并对当前状态与期望状态之间的差异做出反应，以确保集群的当前状态不断地接近用户声明的期望状态。这个过程实现在一个循环中，参考如下伪代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">while</span> <span class="kc">true</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">X</span> <span class="p">=</span> <span class="nf">currentState</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Y</span> <span class="p">=</span> <span class="nf">desiredState</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="nx">X</span> <span class="o">==</span> <span class="nx">Y</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span>  <span class="err">#</span> <span class="nx">Do</span> <span class="nx">nothing</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">do</span><span class="p">(</span><span class="nx">tasks</span> <span class="nx">to</span> <span class="nx">get</span> <span class="nx">to</span> <span class="nx">Y</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>例如，当你通过 API Server 创建一个新的 Pod 对象时，Kubernetes调度器（是一个控制器）注意到此变化，并做出将该 Pod 运行在集群中哪个节点的决定。然后，通过 API Server 修改 Pod 对象的状态。此时，对应节点上的kubelet（是一个控制器）注意到此变化，并将在其所在节点运行该 Pod，设置需要的网络，使 Pod 在集群内可以访问。此处，两个控制器针对不同的状态变化做出反应，以使集群的当前状态与用户指定的期望状态匹配。</p>
+<h3 id="容器组pod">容器组Pod</h3>
+<p>Pod 是 Kubernetes 中的最小可部署单元。一个 Pod 代表了集群中运行的一个工作负载，可以包括一个或多个 docker 容器、挂载需要的存储，并拥有唯一的 IP 地址。Pod 中的多个容器将始终在同一个节点上运行。</p>
+<h3 id="节点node">节点Node</h3>
+<p>节点是Kubernetes集群中的一台机器，可以是物理机，也可以是虚拟机。</p>
+<h2 id="kubernetes网络模型">Kubernetes网络模型</h2>
+<p>关于 Pod 如何接入网络这件事情，Kubernetes 做出了明确的选择。具体来说，Kubernetes 要求所有的网络插件实现必须满足如下要求：</p>
+<ul>
+<li>所有的 Pod 可以与任何其他 Pod 直接通信，无需使用 NAT 映射（network address translation）</li>
+<li>所有节点可以与所有 Pod 直接通信，无需使用 NAT 映射</li>
+<li>Pod 内部获取到的 IP 地址与其他 Pod 或节点与其通信时的 IP 地址是同一个</li>
+</ul>
+<p>在这些限制条件下，需要解决如下四种完全不同的网络使用场景的问题：</p>
+<ol>
+<li>Container-to-Container 的网络</li>
+<li>Pod-to-Pod 的网络</li>
+<li>Pod-to-Service 的网络</li>
+<li>Internet-to-Service 的网络</li>
+</ol>
+<h2 id="container-to-container的网络">Container-to-Container的网络</h2>
+<p>通常，我们认为虚拟机中的网络通信是直接使用以太网设备进行的，如下图所示：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/eth0.c065dbce.png"
+        data-srcset="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/eth0.c065dbce.png, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/eth0.c065dbce.png 1.5x, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/eth0.c065dbce.png 2x"
+        data-sizes="auto"
+        alt="/images/Kubernetes网络模型/eth0.c065dbce.png"
+        title="K8S教程_Kubernetes网络模型_虚拟机的以太网设备" /></p>
+<p>实际情况比这个示意图更加复杂一些。Linux系统中，每一个进程都在一个 <a href="http://man7.org/linux/man-pages/man8/ip-netns.8.html" target="_blank" rel="noopener noreffer ">network namespace (opens new window)</a>中进行通信，network namespace 提供了一个逻辑上的网络堆栈（包含自己的路由、防火墙规则、网络设备）。换句话说，network namespace 为其中的所有进程提供了一个全新的网络堆栈。</p>
+<p>Linux 用户可以使用 <code>ip</code> 命令创建 network namespace。例如，下面的命令创建了一个新的 network namespace 名称为 <code>ns1</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ip netns add ns1
+</span></span><span class="line"><span class="cl"> 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>当创建 network namespace 时，同时将在 <code>/var/run/netns</code> 下创建一个挂载点（mount point）用于存储该 namespace 的信息。</p>
+<p>执行 <code>ls /var/run/netns</code> 命令，或执行 <code>ip</code> 命令，可以查看所有的 network namespace：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ls /var/run/netns
+</span></span><span class="line"><span class="cl">ns1
+</span></span><span class="line"><span class="cl">$ ip netns
+</span></span><span class="line"><span class="cl">ns1
+</span></span><span class="line"><span class="cl">    
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>默认情况下，Linux 将所有的进程都分配到 root network namespace，以使得进程可以访问外部网络，如下图所示：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/root-namespace.bc75d9ba.png"
+        data-srcset="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/root-namespace.bc75d9ba.png, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/root-namespace.bc75d9ba.png 1.5x, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/root-namespace.bc75d9ba.png 2x"
+        data-sizes="auto"
+        alt="/images/Kubernetes网络模型/root-namespace.bc75d9ba.png"
+        title="K8S教程_Kubernetes网络模型_root_network_namespace" /></p>
+<p>在 Kubernetes 中，Pod 是一组 docker 容器的集合，这一组 docker 容器将共享一个 network namespace。Pod 中所有的容器都：</p>
+<ul>
+<li>使用该 network namespace 提供的同一个 IP 地址以及同一个端口空间</li>
+<li>可以通过 localhost 直接与同一个 Pod 中的另一个容器通信</li>
+</ul>
+<p>Kubernetes 为每一个 Pod 都创建了一个 network namespace。具体做法是，把一个 Docker 容器当做 “Pod Container” 用来获取 network namespace，在创建 Pod 中新的容器时，都使用 docker run 的 <code>--network:container</code> 功能来加入该 network namespace，参考 <a href="https://docs.docker.com/engine/reference/run/#network-settings" target="_blank" rel="noopener noreffer ">docker run reference (opens new window)</a>。如下图所示，每一个 Pod 都包含了多个 docker 容器（<code>ctr*</code>），这些容器都在同一个共享的 network namespace 中：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-namespace.5098bb9c.png"
+        data-srcset="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-namespace.5098bb9c.png, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-namespace.5098bb9c.png 1.5x, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-namespace.5098bb9c.png 2x"
+        data-sizes="auto"
+        alt="/images/Kubernetes网络模型/pod-namespace.5098bb9c.png"
+        title="K8S教程_Kubernetes网络模型_pod_network_namespace" /></p>
+<p>此外，Pod 中可以定义数据卷，Pod 中的容器都可以共享这些数据卷，并通过挂载点挂载到容器内部不同的路径，具体请参考 <a href="https://kuboard.cn/learning/k8s-intermediate/persistent/pv.html" target="_blank" rel="noopener noreffer ">存储卷</a></p>
+<h2 id="pod-to-pod的网络">Pod-to-Pod的网络</h2>
+<p>在 Kubernetes 中，每一个 Pod 都有一个真实的 IP 地址，并且每一个 Pod 都可以使用此 IP 地址与 其他 Pod 通信。本章节可以帮助我们理解 Kubernetes 是如何在 Pod-to-Pod 通信中使用真实 IP 的，不管两个 Pod 是在同一个节点上，还是集群中的不同节点上。我们将首先讨论通信中的两个 Pod 在同一个节点上的情况，以避免引入跨节点网络的复杂性。</p>
+<p>从 Pod 的视角来看，Pod 是在其自身所在的 network namespace 与同节点上另外一个 network namespace 进程通信。在Linux上，不同的 network namespace 可以通过 <a href="http://man7.org/linux/man-pages/man4/veth.4.html" target="_blank" rel="noopener noreffer ">Virtual Ethernet Device (opens new window)</a>或 <em><strong>veth pair</strong></em> (两块跨多个名称空间的虚拟网卡)进行通信。为连接 pod 的 network namespace，可以将 <em><strong>veth pair</strong></em> 的一段指定到 root network namespace，另一端指定到 Pod 的 network namespace。每一组 <em><strong>veth pair</strong></em> 类似于一条网线，连接两端，并可以使流量通过。节点上有多少个 Pod，就会设置多少组 <em><strong>veth pair</strong></em>。下图展示了 veth pair 连接 Pod 到 root namespace 的情况：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-veth-pairs.242c359f.png"
+        data-srcset="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-veth-pairs.242c359f.png, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-veth-pairs.242c359f.png 1.5x, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-veth-pairs.242c359f.png 2x"
+        data-sizes="auto"
+        alt="/images/Kubernetes网络模型/pod-veth-pairs.242c359f.png"
+        title="K8S教程_Kubernetes网络模型_veth_pair_per_pod" /></p>
+<p>此时，我们的 Pod 都有了自己的 network namespace，从 Pod 的角度来看，他们都有自己的以太网卡以及 IP 地址，并且都连接到了节点的 root network namespace。为了让 Pod 可以互相通过 root network namespace 通信，我们将使用 network bridge（网桥）。</p>
+<p>Linux Ethernet bridge 是一个虚拟的 Layer 2 网络设备，可用来连接两个或多个网段（network segment）。网桥的工作原理是，在源于目标之间维护一个转发表（forwarding table），通过检查通过网桥的数据包的目标地址（destination）和该转发表来决定是否将数据包转发到与网桥相连的另一个网段。桥接代码通过网络中具备唯一性的网卡MAC地址来判断是否桥接或丢弃数据。</p>
+<p>网桥实现了 <a href="https://en.wikipedia.org/wiki/Address_Resolution_Protocol" target="_blank" rel="noopener noreffer ">ARP (opens new window)</a>协议，以发现链路层与 IP 地址绑定的 MAC 地址。当网桥收到数据帧时，网桥将该数据帧广播到所有连接的设备上（除了发送者以外），对该数据帧做出相应的设备被记录到一个查找表中（lookup table）。后续网桥再收到发向同一个 IP 地址的流量时，将使用查找表（lookup table）来找到对应的 MAC 地址，并转发数据包。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pods-connected-by-bridge.8f775095.png"
+        data-srcset="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pods-connected-by-bridge.8f775095.png, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pods-connected-by-bridge.8f775095.png 1.5x, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pods-connected-by-bridge.8f775095.png 2x"
+        data-sizes="auto"
+        alt="/images/Kubernetes网络模型/pods-connected-by-bridge.8f775095.png"
+        title="K8S教程_Kubernetes网络模型_network_bridge_网桥_虚拟网卡" /></p>
+<h3 id="数据包的传递pod-to-pod同节点">数据包的传递：Pod-to-Pod，同节点</h3>
+<p>在 network namespace 将每一个 Pod 隔离到各自的网络堆栈的情况下，虚拟以太网设备（virtual Ethernet device）将每一个 namespace 连接到 root namespace，网桥将 namespace 又连接到一起，此时，Pod 可以向同一节点上的另一个 Pod 发送网络报文了。下图演示了同节点上，网络报文从一个Pod传递到另一个Pod的情况。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-pod-same-node.90e4d5a2.gif"
+        data-srcset="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-pod-same-node.90e4d5a2.gif, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-pod-same-node.90e4d5a2.gif 1.5x, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-pod-same-node.90e4d5a2.gif 2x"
+        data-sizes="auto"
+        alt="/images/Kubernetes网络模型/pod-to-pod-same-node.90e4d5a2.gif"
+        title="K8S教程_Kubernetes网络模型_同节点上Pod之间发送数据包" /></p>
+<p>Pod1 发送一个数据包到其自己的默认以太网设备 <code>eth0</code>。</p>
+<ol>
+<li>对 Pod1 来说，<code>eth0</code> 通过虚拟以太网设备（veth0）连接到 root namespace</li>
+<li>网桥 <code>cbr0</code> 中为 <code>veth0</code> 配置了一个网段。一旦数据包到达网桥，网桥使用<a href="https://en.wikipedia.org/wiki/Address_Resolution_Protocol" target="_blank" rel="noopener noreffer ">ARP (opens new window)</a>协议解析出其正确的目标网段 <code>veth1</code></li>
+<li>网桥 <code>cbr0</code> 将数据包发送到 <code>veth1</code></li>
+<li>数据包到达 <code>veth1</code> 时，被直接转发到 Pod2 的 network namespace 中的 <code>eth0</code> 网络设备。</li>
+</ol>
+<p>在整个数据包传递过程中，每一个 Pod 都只和 <code>localhost</code> 上的 <code>eth0</code> 通信，且数包被路由到正确的 Pod 上。与开发人员正常使用网络的习惯没有差异。</p>
+<p>Kubernetes 的网络模型规定，在跨节点的情况下 Pod 也必须可以通过 IP 地址访问。也就是说，Pod 的 IP 地址必须始终对集群中其他 Pod 可见；且从 Pod 内部和从 Pod 外部来看，Pod 的IP地址都是相同的。接下来我们讨论跨节点情况下，网络数据包如何传递。</p>
+<h3 id="数据包的传递pod-to-pod跨节点">数据包的传递：Pod-to-Pod，跨节点</h3>
+<p>在了解了如何在同节点上 Pod 之间传递数据包之后，我们接下来看看如何在跨节点的 Pod 之间传递数据包。Kubernetes 网络模型要求 Pod 的 IP 在整个网络中都可访问，但是并不指定如何实现这一点。实际上，这是所使用网络插件相关的，但是，仍然有一些模式已经被确立了。</p>
+<p>通常，集群中每个节点都被分配了一个 CIDR 网段，指定了该节点上的 Pod 可用的 IP 地址段。一旦发送到该 CIDR 网段的流量到达节点，就由节点负责将流量继续转发给对应的 Pod。下图展示了两个节点之间的数据报文传递过程。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-pod-different-nodes.4187b249.gif"
+        data-srcset="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-pod-different-nodes.4187b249.gif, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-pod-different-nodes.4187b249.gif 1.5x, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-pod-different-nodes.4187b249.gif 2x"
+        data-sizes="auto"
+        alt="/images/Kubernetes网络模型/pod-to-pod-different-nodes.4187b249.gif"
+        title="K8S教程_Kubernetes网络模型_跨节点上Pod之间发送数据包" /></p>
+<p>图中，目标 Pod（以绿色高亮）与源 Pod（以蓝色高亮）在不同的节点上，数据包传递过程如下：</p>
+<ol>
+<li>数据包从 Pod1 的网络设备 <code>eth0</code>，该设备通过 <code>veth0</code> 连接到 root namespace</li>
+<li>数据包到达 root namespace 中的网桥 <code>cbr0</code></li>
+<li>网桥上执行 ARP 将会失败，因为与网桥连接的所有设备中，没有与该数据包匹配的 MAC 地址。一旦 ARP 失败，网桥会将数据包发送到默认路由（root namespace 中的 <code>eth0</code> 设备）。此时，数据包离开节点进入网络</li>
+<li>假设网络可以根据各节点的CIDR网段，将数据包路由到正确的节点</li>
+<li>数据包进入目标节点的 root namespace（VM2 上的 <code>eth0</code>）后，通过网桥路由到正确的虚拟网络设备（<code>veth1</code>）</li>
+<li>最终，数据包通过 <code>veth1</code> 发送到对应 Pod 的 <code>eth0</code>，完成了数据包传递的过程</li>
+</ol>
+<p>通常来说，每个节点知道如何将数据包分发到运行在该节点上的 Pod。一旦一个数据包到达目标节点，数据包的传递方式与同节点上不同Pod之间数据包传递的方式就是一样的了。</p>
+<p>此处，我们直接跳过了如何配置网络，以使得数据包可以从一个节点路由到匹配的节点。这些是与具体的网络插件实现相关的，如果感兴趣，可以深入查看某一个网络插件的具体实现。例如，AWS上，亚马逊提供了一个 <a href="https://github.com/aws/amazon-vpc-cni-k8s" target="_blank" rel="noopener noreffer ">Container Network Interface(CNI) plugin (opens new window)</a>使得 Kubernetes 可以在 Amazon VPC 上执行节点到节点的网络通信。</p>
+<p>Container Network Interface(CNI) plugin 提供了一组通用 API 用来连接容器与外部网络。具体到容器化应用开发者来说，只需要了解在整个集群中，可以通过 Pod 的 IP 地址直接访问 Pod；网络插件是如何做到跨节点的数据包传递这件事情对容器化应用来说是透明的。AWS 的 CNI 插件通过利用 AWS 已有的 VPC、IAM、Security Group 等功能提供了一个满足 Kubernetes 网络模型要求的，且安全可管理的网络环境。</p>
+<blockquote>
+<p>在 EC2（AWS 的虚拟机服务） 中，每一个实例都绑定到一个 elastic network interface （ENI）并且 VPC 中所有的 ENI 都是可连通的。默认情况下，每一个 EC2 实例都有一个唯一的 ENI，但是可以随时为 EC2 实例创建多个 ENI。AWS 的 kubernetes CNI plugin 利用了这个特点，并为节点上的每一个 Pod 都创建了一个新的 ENI。由于在 AWS 的基础设施中， VPC 当中的 ENI 已经相互连接了，这就使得每一个 Pod 的 IP 地址天然就可在 VPC 内直接访问。当 CNI 插件安装到集群上是，每一个节点（EC2实例）创建多个 elastic network interface 并且为其申请到 IP 地址，在节点上形成一个 CIDR 网段。当 Pod 被部署时，kubernetes 集群上以 DaemonSet 形式部署的一段程序将接收到该节点上 kubelet 发出的添加 Pod 到 网络的请求。这段程序将从节点的可用 ENI 池中找出一个可用的 IP 地址，并将 ENI 及 IP 地址分配给 Pod，具体做法是按照 <a href="https://kuboard.cn/learning/k8s-intermediate/service/network.html#%e6%95%b0%e6%8d%ae%e5%8c%85%e7%9a%84%e4%bc%a0%e9%80%92%ef%bc%9apod-to-pod%ef%bc%8c%e5%90%8c%e8%8a%82%e7%82%b9" target="_blank" rel="noopener noreffer ">数据包的传递：Pod-to-Pod，同节点</a> 中描述的方式在 Linux 内核中连接虚拟网络设备和网桥。此时，Pod 可以被集群内任意节点访问了。</p>
+</blockquote>
+<h2 id="pod-to-service的网络">Pod-to-Service的网络</h2>
+<p>我们已经了解了如何在 Pod 的 IP 地址之间传递数据包。然而，Pod 的 IP 地址并非是固定不变的，随着 Pod 的重新调度（例如水平伸缩、应用程序崩溃、节点重启等），Pod 的 IP 地址将会出现又消失。此时，Pod 的客户端无法得知该访问哪一个 IP 地址。Kubernetes 中，Service 的概念用于解决此问题。</p>
+<p>一个 Kubernetes Service 管理了一组 Pod 的状态，可以追踪一组 Pod 的 IP 地址的动态变化过程。一个 Service 拥有一个 IP 地址，并且充当了一组 Pod 的 IP 地址的“虚拟 IP 地址”。任何发送到 Service 的 IP 地址的数据包将被负载均衡到该 Service 对应的 Pod 上。在此情况下，Service 关联的 Pod 可以随时间动态变化，客户端只需要知道 Service 的 IP 地址即可（该地址不会发生变化）。</p>
+<p>从效果上来说，Kubernetes 自动为 Service 创建和维护了集群内部的分布式负载均衡，可以将发送到 Service IP 地址的数据包分发到 Service 对应的健康的 Pod 上。接下来我们讨论一下这是怎么做到的。</p>
+<h3 id="netfilter-and-iptables">netfilter and iptables</h3>
+<p>Kubernetes 利用 Linux 内建的网络框架 - <code>netfilter</code> 来实现负载均衡。Netfilter 是由 Linux 提供的一个框架，可以通过自定义 handler 的方式来实现多种网络相关的操作。Netfilter 提供了许多用于数据包过滤、网络地址转换、端口转换的功能，通过这些功能，自定义的 handler 可以在网络上转发数据包、禁止数据包发送到敏感的地址，等。</p>
+<p><code>iptables</code> 是一个 user-space 应用程序，可以提供基于决策表的规则系统，以使用 netfilter 操作或转换数据包。在 Kubernetes 中，kube-proxy 控制器监听 apiserver 中的变化，并配置 iptables 规则。当 Service 或 Pod 发生变化时（例如 Service 被分配了 IP 地址，或者新的 Pod 被关联到 Service），kube-proxy 控制器将更新 iptables 规则，以便将发送到 Service 的数据包正确地路由到其后端 Pod 上。iptables 规则将监听所有发向 Service 的虚拟 IP 的数据包，并将这些数据包转发到该Service 对应的一个随机的可用 Pod 的 IP 地址，同时 iptables 规则将修改数据包的目标 IP 地址（从 Service 的 IP 地址修改为选中的 Pod 的 IP 地址）。当 Pod 被创建或者被终止时，iptables 的规则也被对应的修改。换句话说，iptables 承担了从 Service IP 地址到实际 Pod IP 地址的负载均衡的工作。</p>
+<p>在返回数据包的路径上，数据包从目标 Pod 发出，此时，iptables 规则又将数据包的 IP 头从 Pod 的 IP 地址替换为 Service 的 IP 地址。从请求的发起方来看，就好像始终只是在和 Service 的 IP 地址通信一样。</p>
+<h3 id="ipvs">IPVS</h3>
+<p>Kubernetes v1.11 开始，提供了另一个选择用来实现集群内部的负载均衡：<a href="https://kuboard.cn/learning/k8s-intermediate/service/service-details.html#ipvs-%e4%bb%a3%e7%90%86%e6%a8%a1%e5%bc%8f" target="_blank" rel="noopener noreffer ">IPVS</a>。 IPVS（IP Virtual Server）也是基于 netfilter 构建的，在 Linux 内核中实现了传输层的负载均衡。IPVS 被合并到 LVS（Linux Virtual Server）当中，充当一组服务器的负载均衡器。IPVS 可以转发 TCP / UDP 请求到实际的服务器上，使得一组实际的服务器看起来像是只通过一个单一 IP 地址访问的服务一样。IPVS 的这个特点天然适合与用在 Kubernetes Service 的这个场景下。</p>
+<p>当声明一个 Kubernetes Service 时，你可以指定是使用 iptables 还是 IPVS 来提供集群内的负载均衡工鞥呢。IPVS 是转为负载均衡设计的，并且使用更加有效率的数据结构（hash tables），相较于 iptables，可以支持更大数量的网络规模。当创建使用 IPVS 形式的 Service 时，Kubernetes 执行了如下三个操作：</p>
+<ul>
+<li>在节点上创建一个 dummy IPVS interface</li>
+<li>将 Service 的 IP 地址绑定到该 dummy IPVS interface</li>
+<li>为每一个 Service IP 地址创建 IPVS 服务器</li>
+</ul>
+<p>将来，IPVS 有可能成为 kubernetes 中默认的集群内负载均衡方式。这个改变将只影响到集群内的负载均衡，本文后续讨论将以 iptables 为例子，所有讨论对 IPVS 是同样适用的。</p>
+<h3 id="数据包的传递pod-to-service">数据包的传递：Pod-to-Service</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-service.6718b584.gif"
+        data-srcset="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-service.6718b584.gif, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-service.6718b584.gif 1.5x, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-service.6718b584.gif 2x"
+        data-sizes="auto"
+        alt="/images/Kubernetes网络模型/pod-to-service.6718b584.gif"
+        title="K8S教程_Kubernetes网络模型_数据包的传递_Pod-to-Service" /></p>
+<p>在 Pod 和 Service 之间路由数据包时，数据包的发起和以前一样：</p>
+<ol>
+<li>数据包首先通过 Pod 的 <code>eth0</code> 网卡发出</li>
+<li>数据包经过虚拟网卡 <code>veth0</code> 到达网桥 <code>cbr0</code></li>
+<li>网桥上的 APR 协议查找不到该 Service，所以数据包被发送到 root namespace 中的默认路由 - <code>eth0</code></li>
+<li>此时，在数据包被 <code>eth0</code> 接受之前，数据包将通过 iptables 过滤。iptables 使用其规则（由 kube-proxy 根据 Service、Pod 的变化在节点上创建的 iptables 规则）重写数据包的目标地址（从 Service 的 IP 地址修改为某一个具体 Pod 的 IP 地址）</li>
+<li>数据包现在的目标地址是 Pod 4，而不是 Service 的虚拟 IP 地址。iptables 使用 Linux 内核的 <code>conntrack</code> 工具包来记录具体选择了哪一个 Pod，以便可以将未来的数据包路由到同一个 Pod。简而言之，iptables 直接在节点上完成了集群内负载均衡的功能。数据包后续如何发送到 Pod 上，其路由方式与 <a href="https://kuboard.cn/learning/k8s-intermediate/service/network.html#Pod-to-Pod%e7%9a%84%e7%bd%91%e7%bb%9c" target="_blank" rel="noopener noreffer ">Pod-to-Pod的网络</a> 中的描述相同。</li>
+</ol>
+<h3 id="数据包的传递service-to-pod">数据包的传递：Service-to-Pod</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/service-to-pod.4393f600.gif"
+        data-srcset="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/service-to-pod.4393f600.gif, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/service-to-pod.4393f600.gif 1.5x, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/service-to-pod.4393f600.gif 2x"
+        data-sizes="auto"
+        alt="/images/Kubernetes网络模型/service-to-pod.4393f600.gif"
+        title="K8S教程_Kubernetes网络模型_数据包的传递_service-to-pod" /></p>
+<ol>
+<li>接收到此请求的 Pod 将会发送返回数据包，其中标记源 IP 为接收请求 Pod 自己的 IP，目标 IP 为最初发送对应请求的 Pod 的 IP</li>
+<li>当数据包进入节点后，数据包将经过 iptables 的过滤，此时记录在 <code>conntrack</code> 中的信息将被用来修改数据包的源地址（从接收请求的 Pod 的 IP 地址修改为 Service 的 IP 地址）</li>
+<li>然后，数据包将通过网桥、以及虚拟网卡 <code>veth0</code></li>
+<li>最终到达 Pod 的网卡 <code>eth0</code></li>
+</ol>
+<h3 id="使用dns">使用DNS</h3>
+<p>Kubernetes 也可以使用 DNS，以避免将 Service 的 cluster IP 地址硬编码到应用程序当中。Kubernetes DNS 是 Kubernetes 上运行的一个普通的 Service。每一个节点上的 <code>kubelet</code> 都使用该 DNS Service 来执行 DNS 名称的解析。集群中每一个 Service（包括 DNS Service 自己）都被分配了一个 DNS 名称。DNS 记录将 DNS 名称解析到 Service 的 ClusterIP 或者 Pod 的 IP 地址。<a href="https://kuboard.cn/learning/k8s-intermediate/service/dns.html#srv-%e8%ae%b0%e5%bd%95" target="_blank" rel="noopener noreffer ">SRV 记录</a> 用来指定 Service 的已命名端口。</p>
+<p>DNS Pod 由三个不同的容器组成：</p>
+<ul>
+<li><code>kubedns</code>：观察 Kubernetes master 上 Service 和 Endpoints 的变化，并维护内存中的 DNS 查找表</li>
+<li><code>dnsmasq</code>：添加 DNS 缓存，以提高性能</li>
+<li><code>sidecar</code>：提供一个健康检查端点，可以检查 <code>dnsmasq</code> 和 <code>kubedns</code> 的健康状态</li>
+</ul>
+<p>DNS Pod 被暴露为 Kubernetes 中的一个 Service，该 Service 及其 ClusterIP 在每一个容器启动时都被传递到容器中（环境变量及 /etc/resolves），因此，每一个容器都可以正确的解析 DNS。DNS 条目最终由 <code>kubedns</code> 解析，<code>kubedns</code> 将 DNS 的所有信息都维护在内存中。<code>etcd</code> 中存储了集群的所有状态，<code>kubedns</code> 在必要的时候将 <code>etcd</code> 中的 key-value 信息转化为 DNS 条目信息，以重建内存中的 DNS 查找表。</p>
+<p>CoreDNS 的工作方式与 <code>kubedns</code> 类似，但是通过插件化的架构构建，因而灵活性更强。自 Kubernetes v1.11 开始，CoreDNS 是 Kubernetes 中默认的 DNS 实现。</p>
+<h2 id="internet-to-service的网络">Internet-to-Service的网络</h2>
+<p>前面我们已经了解了 Kubernetes 集群内部的网络路由。下面，我们来探讨一下如何将 Service 暴露到集群外部：</p>
+<ul>
+<li>从集群内部访问互联网</li>
+<li>从互联网访问集群内部</li>
+</ul>
+<h3 id="出方向---从集群内部访问互联网">出方向 - 从集群内部访问互联网</h3>
+<p>将网络流量从集群内的一个节点路由到公共网络是与具体网络以及实际网络配置紧密相关的。为了更加具体地讨论此问题，本文将使用 AWS VPC 来讨论其中的具体问题。</p>
+<p>在 AWS，Kubernetes 集群在 VPC 内运行，在此处，每一个节点都被分配了一个内网地址（private IP address）可以从 Kubernetes 集群内部访问。为了使访问外部网络，通常会在 VPC 中添加互联网网关（Internet Gateway），以实现如下两个目的：</p>
+<ul>
+<li>作为 VPC 路由表中访问外网的目标地址</li>
+<li>提供网络地址转换（NAT Network Address Translation），将节点的内网地址映射到一个外网地址，以使外网可以访问内网上的节点</li>
+</ul>
+<p>在有互联网网关（Internet Gateway）的情况下，虚拟机可以任意访问互联网。但是，存在一个小问题：Pod 有自己的 IP 地址，且该 IP 地址与其所在节点的 IP 地址不一样，并且，互联网网关上的 NAT 地址映射只能够转换节点（虚拟机）的 IP 地址，因为网关不知道每个节点（虚拟机）上运行了哪些 Pod （互联网网关不知道 Pod 的存在）。接下来，我们了解一下 Kubernetes 是如何使用 iptables 解决此问题的。</p>
+<h4 id="数据包的传递node-to-internet">数据包的传递：Node-to-Internet</h4>
+<p>下图中：</p>
+<ol>
+<li>数据包从 Pod 的 network namespace 发出</li>
+<li>通过 <code>veth0</code> 到达虚拟机的 root network namespace</li>
+<li>由于网桥上找不到数据包目标地址对应的网段，数据包将被网桥转发到 root network namespace 的网卡 <code>eth0</code>。在数据包到达 <code>eth0</code> 之前，iptables 将过滤该数据包。</li>
+<li>在此处，数据包的源地址是一个 Pod，如果仍然使用此源地址，互联网网关将拒绝此数据包，因为其 NAT 只能识别与节点（虚拟机）相连的 IP 地址。因此，需要 iptables 执行源地址转换（source NAT），这样子，对互联网网关来说，该数据包就是从节点（虚拟机）发出的，而不是从 Pod 发出的</li>
+<li>数据包从节点（虚拟机）发送到互联网网关</li>
+<li>互联网网关再次执行源地址转换（source NAT），将数据包的源地址从节点（虚拟机）的内网地址修改为网关的外网地址，最终数据包被发送到互联网</li>
+</ol>
+<p>在回路径上，数据包沿着相同的路径反向传递，源地址转换（source NAT）在对应的层级上被逆向执行。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-internet.986cf745.gif"
+        data-srcset="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-internet.986cf745.gif, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-internet.986cf745.gif 1.5x, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/pod-to-internet.986cf745.gif 2x"
+        data-sizes="auto"
+        alt="/images/Kubernetes网络模型/pod-to-internet.986cf745.gif"
+        title="K8S教程_Kubernetes网络模型_数据包的传递_pod-to-internet" /></p>
+<h3 id="入方向---从互联网访问kubernetes">入方向 - 从互联网访问Kubernetes</h3>
+<p>入方向访问（从互联网访问Kubernetes集群）是一个非常棘手的问题。该问题同样跟具体的网络紧密相关，通常来说，入方向访问在不同的网络堆栈上有两个解决方案：</p>
+<ol>
+<li>Service LoadBalancer</li>
+<li>Ingress Controller</li>
+</ol>
+<h4 id="layer-4loadbalancer">Layer 4：LoadBalancer</h4>
+<p>当创建 Kubernetes Service 时，可以指定其类型为 <a href="https://kuboard.cn/learning/k8s-intermediate/service/service-types.html#loadbalancer" target="_blank" rel="noopener noreffer ">LoadBalancer</a>。 LoadBalancer 的实现由 <a href="https://kubernetes.io/docs/concepts/architecture/cloud-controller/" target="_blank" rel="noopener noreffer ">cloud controller (opens new window)</a>提供，cloud controller 可以调用云供应商 IaaS 层的接口，为 Kubernetes Service 创建负载均衡器（如果您自建 Kubernetes 集群，可以使用 NodePort 类型的 Service，并手动创建负载均衡器）。用户可以将请求发送到负载均衡器来访问 Kubernetes 中的 Service。</p>
+<p>在 AWS，负载均衡器可以将网络流量分发到其目标服务器组（即 Kubernetes 集群中的所有节点）。一旦数据包到达节点，Service 的 iptables 规则将确保其被转发到 Service 的一个后端 Pod。</p>
+<h4 id="数据包的传递loadbalancer-to-service">数据包的传递：LoadBalancer-to-Service</h4>
+<p>接下来了解一下 Layer 4 的入方向访问具体是如何做到的：</p>
+<ol>
+<li>Loadbalancer 类型的 Service 创建后，cloud controller 将为其创建一个负载均衡器</li>
+<li>负载均衡器只能直接和节点（虚拟机沟通），不知道 Pod 的存在，当数据包从请求方（互联网）到达 LoadBalancer 之后，将被分发到集群的节点上</li>
+<li>节点上的 iptables 规则将数据包转发到合适的 Pod 上 （同 <a href="https://kuboard.cn/learning/k8s-intermediate/service/network.html#%e6%95%b0%e6%8d%ae%e5%8c%85%e7%9a%84%e4%bc%a0%e9%80%92%ef%bc%9aservice-to-pod" target="_blank" rel="noopener noreffer ">数据包的传递：Service-to-Pod</a>）</li>
+</ol>
+<p>从 Pod 到请求方的相应数据包将包含 Pod 的 IP 地址，但是请求方需要的是负载均衡器的 IP 地址。iptables 和 <code>conntrack</code> 被用来重写返回路径上的正确的 IP 地址。</p>
+<p>下图描述了一个负载均衡器和三个集群节点：</p>
+<ol>
+<li>请求数据包从互联网发送到负载均衡器</li>
+<li>负载均衡器将数据包随机分发到其中的一个节点（虚拟机），此处，我们假设数据包被分发到了一个没有对应 Pod 的节点（VM2）上</li>
+<li>在 VM2 节点上，kube-proxy 在节点上安装的 iptables 规则会将该数据包的目标地址判定到对应的 Pod 上（集群内负载均衡将生效）</li>
+<li>iptables 完成 NAT 映射，并将数据包转发到目标 Pod</li>
+</ol>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/internet-to-service.b2991f5e.gif"
+        data-srcset="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/internet-to-service.b2991f5e.gif, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/internet-to-service.b2991f5e.gif 1.5x, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/internet-to-service.b2991f5e.gif 2x"
+        data-sizes="auto"
+        alt="/images/Kubernetes网络模型/internet-to-service.b2991f5e.gif"
+        title="K8S教程_Kubernetes网络模型_数据包的传递_internet-to-service" /></p>
+<h4 id="layer-7ingress控制器">Layer 7：Ingress控制器</h4>
+<p>译者注</p>
+<p>本章节讲述的 Ingress 控制器实现方式是特定于 AWS 的，与 <a href="https://kuboard.cn/learning/k8s-intermediate/service/ingress.html" target="_blank" rel="noopener noreffer ">nginx ingress controller</a> 的具体做法有所不同</p>
+<p>Layer 7 网络入方向访问在网络堆栈的 HTTP/HTTPS 协议层面工作，并且依赖于 KUbernetes Service。要实现 Layer 7 网络入方向访问，首先需要将 Service 指定为 <code>NodtePort</code> 类型，此时 Kubernetes master 将会为该 Service 分配一个 <a href="https://kuboard.cn/learning/k8s-intermediate/service/service-types.html#nodeport" target="_blank" rel="noopener noreffer ">节点端口</a>，每一个节点上的 iptables 都会将此端口上的请求转发到 Service 的后端 Pod 上。此时，Service-to-Pod 的路由与 <a href="https://kuboard.cn/learning/k8s-intermediate/service/network.html#%e6%95%b0%e6%8d%ae%e5%8c%85%e7%9a%84%e4%bc%a0%e9%80%92%ef%bc%9aservice-to-pod" target="_blank" rel="noopener noreffer ">数据包的传递：Service-to-Pod</a> 的描述相同。</p>
+<p>接下来，创建一个 Kubernetes <a href="https://kuboard.cn/learning/k8s-intermediate/service/ingress.html" target="_blank" rel="noopener noreffer ">Ingress</a> 对象可以将该 Service 发布到互联网。Ingress 是一个高度抽象的 HTTP 负载均衡器，可以将 HTTP 请求映射到 Kubernetes Service。在不同的 Kubernetes 集群中，Ingress 的具体实现可能是不一样的。与 Layer 4 的网络负载均衡器相似，HTTP 负载均衡器只理解节点的 IP 地址（而不是 Pod 的 IP 地址），因此，也同样利用了集群内部通过 iptables 实现的负载均衡特性。</p>
+<p>在 AWS 中，ALB Ingress 控制器使用 Amazon 的 Layer 7 Application Load Balancer实现了 Kubernetes Ingress 的功能。下图展示了 AWS 上 Ingress 控制器的细节，也展示了网络请求是如何从 ALB 路由到 Kubernetes 集群的。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/ingress-controller-design.dcad3010.png"
+        data-srcset="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/ingress-controller-design.dcad3010.png, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/ingress-controller-design.dcad3010.png 1.5x, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/ingress-controller-design.dcad3010.png 2x"
+        data-sizes="auto"
+        alt="/images/Kubernetes网络模型/ingress-controller-design.dcad3010.png"
+        title="K8S教程_Kubernetes网络模型_Ingress_Controller_Design" /></p>
+<ol>
+<li>ALB Ingress Controller 创建后，将监听 Kubernetes API 上关于 Ingress 的事件。当发现匹配的 Ingress 对象时，Ingress Controller 开始创建 AWS 资源</li>
+<li>AWS 使用 Application Load Balancer（ALB）来满足 Ingress 对象的要求，并使用 Target Group 将请求路由到目标节点</li>
+<li>ALB Ingress Controller 为 Kubernetes Ingress 对象中用到的每一个 Kubernetes Service 创建一个 AWS Target Group</li>
+<li>Listener 是一个 ALB 进程，由 ALB Ingress Controller 根据 Ingress 的注解（annotations）创建，监听 ALB 上指定的协议和端口，并接收外部的请求</li>
+<li>ALB Ingress Controller 还根据 Kubernetes Ingress 中的路径定义，创建了 Target Group Rule，确保指定路径上的请求被路由到合适的 Kubernetes Service</li>
+</ol>
+<h4 id="数据包的传递ingress-to-service">数据包的传递：Ingress-to-Service</h4>
+<p>Ingress-to-Service 的数据包传递与 LoadBalancer-to-Service 的数据包传递非常相似。核心差别是：</p>
+<ul>
+<li>Ingress 能够解析 URL 路径（可基于路径进行路由）</li>
+<li>Ingress 连接到 Service 的 NodePort</li>
+</ul>
+<p>下图展示了 Ingress-to-Service 的数据包传递过程。</p>
+<ol>
+<li>创建 Ingress 之后，cloud controller 将会为其创建一个新的 Ingress Load Balancer</li>
+<li>由于 Load Balancer 并不知道 Pod 的 IP 地址，当路由到达 Ingress Load Balancer 之后，会被转发到集群中的节点上（Service的节点端口）</li>
+<li>节点上的 iptables 规则将数据包转发到合适的 Pod</li>
+<li>Pod 接收到数据包</li>
+</ol>
+<p>从 Pod 返回的响应数据包将包含 Pod 的 IP 地址，但是请求客户端需要的是 Ingress Load Balancer 的 IP 地址。iptables 和 <code>conntrack</code> 被用来重写返回路径上的 IP 地址。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/ingress-to-service.1a08f351.gif"
+        data-srcset="/images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/ingress-to-service.1a08f351.gif, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/ingress-to-service.1a08f351.gif 1.5x, /images/Kubernetes%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%9e%8b/ingress-to-service.1a08f351.gif 2x"
+        data-sizes="auto"
+        alt="/images/Kubernetes网络模型/ingress-to-service.1a08f351.gif"
+        title="K8S教程_Kubernetes网络模型_数据包的传递_Ingress-to-Service" /></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-09-08</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://guohailan.github.io/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/" data-title="Kubernetes网络模型" data-hashtags="k8s"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://guohailan.github.io/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/" data-hashtag="k8s"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://guohailan.github.io/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/" data-title="Kubernetes网络模型"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://guohailan.github.io/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/" data-title="Kubernetes网络模型" data-image="/images/thumbnail/k8s_net.jpg"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://guohailan.github.io/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/" data-title="Kubernetes网络模型"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/baidu.svg" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/k8s/">k8s</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/trojan-go%E6%90%AD%E5%BB%BA/" class="prev" rel="prev" title="Trojan-go搭建"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Trojan-go搭建</a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2020 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">guohailan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.5.0/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"fok8VPlm0I0mJLCDA5SMvn1o-gzGzoHsz","appKey":"Ghs1UwIPIu4r6tEHw1jLYSFG","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-CN","pageSize":10,"placeholder":"说些什么...","recordIP":true,"serverURLs":"https://fok8vplm.lc-cn-n1-shared.com","visitor":true}},"data":{"id-1":"My blog","id-2":"My blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"},"twemoji":true,"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
